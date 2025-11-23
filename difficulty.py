@@ -12,7 +12,6 @@ def enemy_damage_with_difficulty(base_damage: int, difficulty: int) -> int:
     factor = 1.0 + random.random() * (difficulty / 10.0)
     return max(1, round(base_damage * factor))
 
-
 def player_damage_with_difficulty(base_damage: int, difficulty: int) -> int:
     if difficulty <= 0:
         return base_damage

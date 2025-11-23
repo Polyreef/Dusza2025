@@ -1,5 +1,7 @@
 import sys
 
+from test import run_automated_tests
+
 
 def main() -> None:
     if len(sys.argv) == 1:
@@ -9,7 +11,7 @@ def main() -> None:
     if sys.argv[1] == "--ui":
         pass
     else:
-        pass
+        run_automated_tests(sys.argv[1])
 
 
 if __name__ == "__main__":
