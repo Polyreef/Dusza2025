@@ -18,10 +18,10 @@ def damage_multiplier(att_type, def_type):
     try:
         i_att = ELEMENT_ORDER.index(att_type)
         i_def = ELEMENT_ORDER.index(def_type)
-    except ValueError as e:
+    except ValueError:
         # ismeretlen típus esetén inkább ne módosítsuk
-        print(f"Hiba: {e}")
-        return 1
+        print(f"Ismeretlen kártyatípus(ok): {att_type}, {def_type}")
+        return -1
 
     diff = (i_att - i_def) % len(ELEMENT_ORDER)
     if diff == 2:
@@ -60,7 +60,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
 
     if not player.has_deck():
         print("Hiba: Nincs összeállított pakli")
-        return
+        return -1
 
     if rng is None:
         rng = random.Random()
@@ -115,6 +115,10 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
                 # egyébként (pl. a harc legelső körében) ilyenkor nem támad
             else:
                 dmg = apply_damage(e_active, p_active, difficulty, rng, is_enemy=True)
+                if dmg == -1:
+                    print("Hiba a tényleges sebzés kiszámításánál.")
+                    return -1
+                
                 p_hp = max(0, p_hp - dmg)
                 log_lines.append(
                     f"{round_no}.kor;kazamata;tamad;{e_active.name};{dmg};{p_active.name};{p_hp}"
@@ -147,6 +151,10 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
                 # különben a következő kör elején játszik majd ki új lapot a kazamata
             else:
                 dmg = apply_damage(p_active, e_active, difficulty, rng, is_enemy=False)
+                if dmg == -1:
+                    print("Hiba a tényleges sebzés kiszámításánál.")
+                    return -1
+                
                 e_hp = max(0, e_hp - dmg)
                 log_lines.append(
                     f"{round_no}.kor;jatekos;tamad;{p_active.name};{dmg};{e_active.name};{e_hp}"
@@ -180,6 +188,10 @@ def apply_damage(att_card, def_card, difficulty, rng, is_enemy):
 
     # Típus-szorzó alkalmazása
     mult = damage_multiplier(att_card.element, def_card.element)
+    if mult == -1:
+        print("Hiba a sebzés kiszámításánál.")
+        return -1
+    
     base_damage = att_card.damage
     if mult == 2:
         base_damage *= 2

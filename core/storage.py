@@ -61,15 +61,19 @@ def world_to_dict(world):
 
 def world_from_dict(data):
     world = World()
+    
     for c in data.get("simple_cards", []):
         card = _card_from_dict(c)
         world.simple_cards[card.name] = card
+    
     for c in data.get("leader_cards", []):
         card = _card_from_dict(c)
         world.leader_cards[card.name] = card
+    
     for d in data.get("dungeons", []):
         dungeon = _dungeon_from_dict(d)
         world.dungeons[dungeon.name] = dungeon
+    
     return world
 
 

@@ -49,9 +49,21 @@ class Dungeon:
 
         cards = []
         for name in self.simple_card_names:
-            cards.append(world.get_simple_card(name))
+            simple_card = world.get_simple_card(name)
+            if simple_card == -1:
+                print("Hiba a sima kártya lekérdezésénél.")
+                return -1
+
+            cards.append(simple_card)
+        
         if self.leader_name:
-            cards.append(world.get_leader_card(self.leader_name))
+            leader_card = world.get_leader_card(self.leader_name)
+            if leader_card == -1:
+                print("Hiba a vezérkártya lekérdezésénél.")
+                return -1
+            
+            cards.append(leader_card)
+        
         return cards
 
 
@@ -73,7 +85,7 @@ class World:
     def add_simple_card(self, name, damage, health, element):
         if name in self.simple_cards or name in self.leader_cards:
             print(f"Már létezik ilyen nevű kártya: {name}")
-            return
+            return -1
 
         self.simple_cards[name] = CardDefinition(name, damage, health, element)
 
@@ -88,11 +100,13 @@ class World:
 
         if name in self.simple_cards or name in self.leader_cards:
             print(f"Már létezik ilyen nevű kártya: {name}")
-            return
-
-        # TODO: HIBAKEZELÉS
+            return -1
 
         base = self.get_simple_card(base_card_name)
+        if base == -1:
+            print("Hiba a sima kártya lekérdezésével.")
+            return -1
+
         if mode == "sebzes":
             damage = base.damage * 2
             health = base.health
@@ -101,7 +115,7 @@ class World:
             health = base.health * 2
         else:
             print(f"Ismeretlen vezér mod: {mode}")
-            return
+            return -1
 
         self.leader_cards[name] = CardDefinition(name, damage, health, base.element)
 
@@ -110,7 +124,7 @@ class World:
     def add_dungeon(self, dungeon):
         if dungeon.name in self.dungeons:
             print(f"Már létezik ilyen nevű kazamata: {dungeon.name}")
-            return
+            return -1
 
         self.dungeons[dungeon.name] = dungeon
 
@@ -121,18 +135,21 @@ class World:
             return self.simple_cards[name]
         except KeyError:
             print(f"Ismeretlen sima kártya: {name}")
+            return -1
 
     def get_leader_card(self, name):
         try:
             return self.leader_cards[name]
         except KeyError:
             print(f"Ismeretlen vezér kártya: {name}")
+            return -1
 
     def get_dungeon(self, name):
         try:
             return self.dungeons[name]
         except KeyError:
             print(f"Ismeretlen kazamata: {name}")
+            return -1
 
     # Iterátorok (export / mentés megkönnyítésére)
 
@@ -171,6 +188,10 @@ class Player:
             return False
 
         base = world.get_simple_card(card_name)
+        if base == -1:
+            print("Hiba a sima kártya lekérdezésével.")
+            return -1
+        
         self.collection[card_name] = base.copy()
 
         return True
@@ -212,7 +233,7 @@ class Player:
 
         if not unique:
             print("A pakli üres vagy nem tartalmaz érvényes lapot.")
-            return
+            return -1
 
         self.deck = unique
 

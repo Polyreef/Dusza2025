@@ -12,11 +12,11 @@ class TitleScreen:
 
         self.buttons = []
 
-        spacing = 70
+        spacing = screen_height / 10.5
 
-        default_width = 180
-        default_height = 60
-        default_y = 600
+        default_width = self.screen_width / 7
+        default_height = screen_height / 13
+        default_y = screen_height / 2 + screen_height / 11
         default_x = screen_width / 2
 
         self.enable_menu_click = True
@@ -32,26 +32,36 @@ class TitleScreen:
         self.mode = "menu"
         self.font = pygame.font.SysFont("comicsans", 30)
 
-        self.background = pygame.image.load("Assets/Images/Misc/MainMenuBG.png")
+        self.background_raw = pygame.image.load("Assets/Images/Misc/MainMenuBG.png")
+
+        self.background = pygame.transform.smoothscale(self.background_raw, (screen_width, screen_height))
+
 
         self.popup_win_raw = pygame.image.load("Assets/Images/Misc/Popup_window.png")
+
+        popup_scale = 0.6
+        popup_scaled_w = int(self.screen_width * popup_scale)
+        ratio = popup_scaled_w / self.popup_win_raw.get_width()
+
+        popup_scaled_h = int(self.screen_height * ratio)
+
+        
+
         self.popup_win_scaled = pygame.transform.smoothscale(
-            self.popup_win_raw, (1.1, 1.1)
+            self.popup_win_raw, (popup_scaled_w, popup_scaled_h)
         )
 
-        popup_w = self.popup_win_raw.get_width()
-        popup_h = self.popup_win_raw.get_height()
 
-        popup_x = self.screen_width / 2 - popup_w / 2
-        popup_y = self.screen_height / 2 - popup_h / 2
 
-        pgm_button_w = default_width * 1.8
-        pgm_button_h = default_height * 1.8
-        player_gm_y = popup_y + popup_h - 350
+        self.popup_x = self.screen_width / 2 - popup_scaled_w / 2
+        self.popup_y = self.screen_height / 2 - popup_scaled_h / 2
 
-        player_x = popup_x + popup_w * 0.3 - pgm_button_w / 2
+        pgm_button_w = default_width * self.screen_height/1000 * 3
+        pgm_button_h = default_height * self.screen_height/1000 * 3
+        player_y = self.popup_y + self.popup_y / 2 - self.popup_y / 5
+        gamemaster_y = self.popup_y + self.popup_y / 2 + self.popup_y / 3
 
-        gamemaster_x = popup_x + popup_w * 0.63 - pgm_button_w / 2
+        player_gm_x = self.screen_width / 2 - pgm_button_w / 2
 
         self.start_button = Button(
             pos=(default_x - default_width / 2, default_y),
@@ -90,7 +100,7 @@ class TitleScreen:
         )
 
         self.player_button = Button(
-            pos=(player_x, player_gm_y),
+            pos=(player_gm_x, player_y),
             normal_path="Assets/Images/Buttons/NoHoverPlayerNotSized.png",
             callback_func=self.player_pressed,
             hover_path="Assets/Images/Buttons/HoverPlayerNotSized.png",
@@ -99,13 +109,15 @@ class TitleScreen:
         )
 
         self.gamemaster_button = Button(
-            pos=(gamemaster_x, player_gm_y),
+            pos=(player_gm_x, gamemaster_y),
             normal_path="Assets/Images/Buttons/NoHoverGameMasterNotSized.png",
             callback_func=self.gamemaster_pressed,
             hover_path="Assets/Images/Buttons/HoverGameMasterNotSized.png",
             scale_w=pgm_button_w,
             scale_h=pgm_button_h,
         )
+
+        
 
         self.buttons.append(self.start_button)
         self.buttons.append(self.load_button)
@@ -122,10 +134,10 @@ class TitleScreen:
         overlay.fill((20, 20, 20))
         self.screen.blit(overlay, (0, 0))
         self.screen.blit(
-            self.popup_win_raw,
+            self.popup_win_scaled,
             (
-                self.screen_width / 2 - self.popup_win_raw.get_width() / 2,
-                self.screen_height / 2 - self.popup_win_raw.get_height() / 2,
+                self.popup_x,
+                self.popup_y
             ),
         )
 

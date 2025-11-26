@@ -30,7 +30,7 @@ def run_test_mode(input_dir):
         f = open(in_path, encoding="ascii")
     except OSError:
         print("Hiba: nem sikerült megnyitni az in.txt fájlt:", in_path)
-        return
+        return -1
 
     with f:
         for raw_line in f:
@@ -38,7 +38,8 @@ def run_test_mode(input_dir):
             if not line:
                 continue
 
-            handle_line(line, input_dir, world)
+            if handle_line(line, input_dir, world) == -1:
+                print(f"Hiba ennél a sornál: {line}")
 
 
 def handle_line(line, input_dir, world):
@@ -53,14 +54,18 @@ def handle_line(line, input_dir, world):
         damage = int(parts[2])
         health = int(parts[3])
         element = parts[4]
-        world.add_simple_card(name, damage, health, element)
+        if world.add_simple_card(name, damage, health, element) == -1:
+            print("Hiba a sima kártya világhoz adásával.")
+            return -1
 
     elif cmd == "uj vezer":
         # uj vezer;VezerNev;AlapKartyaNev;sebzes/eletero
         name = parts[1]
         base_name = parts[2]
         mode = parts[3]
-        world.add_leader_card(name, base_name, mode)
+        if world.add_leader_card(name, base_name, mode) == -1:
+            print("Hiba a vezérkártya világhoz adásával.")
+            return -1
 
     elif cmd == "uj kazamata":
         # többféle forma, a tipus határozza meg
@@ -82,10 +87,12 @@ def handle_line(line, input_dir, world):
             leader_name = parts[4]
         else:
             print(f"Ismeretlen kazamata típus: {kind}")
-            return
+            return -1
 
         dungeon = Dungeon(name, kind, simple_names, leader_name, reward_type)
-        world.add_dungeon(dungeon)
+        if world.add_dungeon(dungeon) == -1:
+            print("Hiba a kazamata világhoz adásával.")
+            return -1
 
     elif cmd == "uj jatekos":
         # új játékos, üres gyűjteménnyel
@@ -96,16 +103,17 @@ def handle_line(line, input_dir, world):
         # felvetel gyujtemenybe;KartyaNev
         if player is None:
             print("Nincs játékos, de gyűjteménybe vétel történne.")
-            return
+            return -1
 
         card_name = parts[1]
-        player.add_card_from_world(world, card_name)
+        if player.add_card_from_world(world, card_name) == -1:
+            print("Hiba a ")
 
     elif cmd == "uj pakli":
         # uj pakli;Nev1,Nev2,...
         if player is None:
             print("Nincs játékos, de paklit szeretnénk.")
-            return
+            return -1
 
         card_names = [n.strip() for n in parts[1].split(",") if n.strip()]
         player.set_deck(card_names)
@@ -114,7 +122,7 @@ def handle_line(line, input_dir, world):
         # harc;KazamataNev;out.harc01.txt
         if player is None:
             print("Nincs játékos, de harc indulna.")
-            return
+            return -1
 
         dungeon_name = parts[1]
         out_filename = parts[2]
@@ -122,9 +130,15 @@ def handle_line(line, input_dir, world):
 
         # Teszt módban a nehézségi szint mindig 0.
         result = run_battle(world, player, dungeon, difficulty=0)
+        if result == -1:
+            print("Hiba a harc levezényelésénél.")
+            return -1
 
         # jutalom alkalmazása és utolsó sor
         final_line = apply_reward_and_get_final_line(world, player, dungeon, result)
+        if final_line == -1:
+            print("Hiba a harc végénél és/vagy jutalom feldolgozásánál.")
+            return -1
 
         out_path = os.path.join(input_dir, out_filename)
         with open(out_path, "w", encoding="ascii", newline="\n") as out_f:
@@ -136,12 +150,14 @@ def handle_line(line, input_dir, world):
     elif cmd == "export vilag":
         out_filename = parts[1]
         out_path = os.path.join(input_dir, out_filename)
-        export_world(world, out_path)
+        if export_world(world, out_path) == -1:
+            print("Hiba a világ exportálásánál.")
+            return -1
 
     elif cmd == "export jatekos":
         if player is None:
             print("Nincs játékos, de 'export jatekos' parancs érkezett.")
-            return
+            return -1
 
         out_filename = parts[1]
         out_path = os.path.join(input_dir, out_filename)
@@ -149,6 +165,7 @@ def handle_line(line, input_dir, world):
 
     else:
         print(f"Ismeretlen parancs: {cmd}")
+        return -1
 
 
 def apply_reward_and_get_final_line(world, player, dungeon, result):
@@ -171,6 +188,7 @@ def apply_reward_and_get_final_line(world, player, dungeon, result):
             card.health += 2
         else:
             print(f"Ismeretlen jutalom típus: {reward_type}")
+            return -1
 
         return f"jatekos nyert;{reward_type};{card_name}"
 
@@ -191,6 +209,7 @@ def apply_reward_and_get_final_line(world, player, dungeon, result):
 
     else:
         print(f"Ismeretlen kazamata típus: {dungeon.kind}")
+        return -1
 
 
 def export_world(world, out_path):
@@ -216,7 +235,7 @@ def export_world(world, out_path):
                 line = base + f";{d.leader_name}\n"
             else:
                 print(f"Ismeretlen kazamata típus: {d.kind}")
-                return
+                return -1
 
             f.write(line)
 

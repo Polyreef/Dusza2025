@@ -29,7 +29,8 @@ def main():
             print(f"Hiba: a megadott mappa nem létezik: {input_dir}")
             sys.exit(1)
 
-        run_test_mode(input_dir)
+        if run_test_mode(input_dir) == -1:
+            print("A teszt nem lett teljesen sikeres.")
 
 
 if __name__ == "__main__":
