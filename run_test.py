@@ -207,7 +207,7 @@ def export_world(world, out_path):
 
         for d in world.iter_dungeons():
             # kazamata;tipus;Nev;lista;vezer;[jutalom]
-            base = f"kazamata;{d.kind};{d.name};{",".join(d.simple_card_names)}"
+            base = f"kazamata;{d.kind};{d.name};" + ",".join(d.simple_card_names)
             if d.kind == "egyszeru":
                 line = base + f";{d.reward_type}\n"
             elif d.kind == "kis":
