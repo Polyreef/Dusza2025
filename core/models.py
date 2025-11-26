@@ -1,131 +1,242 @@
-from dataclasses import dataclass
-from typing import List, Dict, Optional
-
-
-# Értékhalmazok és segédfüggvények
-
-
-CARD_TYPES = {"fold", "levego", "viz", "tuz"}
-DUNGEON_TYPES = {"egyszeru", "kis", "nagy"}
-REWARD_TYPES = {"sebzes", "eletero"}
-
-
-def parse_element(element_text: str) -> str:
+class CardDefinition:
     """
-    Szövegből elem string.
+    Egy kártya típust ír le (név, sebzés, életerő, típus).
 
-    Engedélyezett értékek: "fold", "levego", "viz", "tuz".
+    Teszt módban ez közvetlenül megfelel az I. forduló világkártyáinak.
     """
 
-    element = element_text.strip().lower()
-    if element not in CARD_TYPES:
-        raise ValueError(f"Ismeretlen elem típus: {element_text}")
-    return element
+    def __init__(self, name, damage, health, element):
+        self.name = name
+        self.damage = int(damage)
+        self.health = int(health)
+        self.element = element  # "fold", "levego", "viz", "tuz"
+
+    def copy(self):
+        """Új, azonos értékű példányt ad vissza."""
+
+        return CardDefinition(self.name, self.damage, self.health, self.element)
 
 
-def parse_dungeon_type(dungeon_type_text: str) -> str:
-    """
-    Szövegből kazamata típus string.
-
-    Engedélyezett értékek: "egyszeru", "kis", "nagy".
-    """
-
-    dungeon_type = dungeon_type_text.strip().lower()
-    if dungeon_type not in DUNGEON_TYPES:
-        raise ValueError(f"Ismeretlen kazamata típus: {dungeon_type_text}")
-    return dungeon_type
-
-
-def parse_reward_type(reward_type_text: str) -> str:
-    """
-    Szövegből jutalom típus string.
-
-    Engedélyezett értékek: "sebzes", "eletero".
-    """
-
-    reward_type = reward_type_text.strip().lower()
-    if reward_type not in REWARD_TYPES:
-        raise ValueError(f"Ismeretlen jutalom típus: {reward_type_text}")
-    return reward_type
-
-
-# Alap adatszerkezetek
-
-
-@dataclass
-class Card:
-    """
-    Egy kártya (sima vagy vezér).
-
-    damage: sebzés érték
-    health: életerő
-    element: "fold" / "levego" / "viz" / "tuz"
-    """
-
-    name: str
-    damage: int
-    health: int
-    element: str
-
-
-@dataclass
 class Dungeon:
     """
-    Egy kazamata leírása a világban.
+    Kazamata definíciója.
 
-    dungeon_type: "egyszeru" / "kis" / "nagy"
-    simple_cards: a sima kártyák nevei sorrendben
-    leader_name: vezér kártya neve (egyszerű kazamatánál None)
-    reward: egyszerű és kis kazamatánál "sebzes" vagy "eletero", nagy kazamatánál None (ott új kártyát kapunk).
+    kind:
+        - "egyszeru"
+        - "kis"
+        - "nagy"
+
+    simple_card_names: a benne lévő sima kártyák nevei, sorrendben
+    leader_name: vezérkártya neve (kis/nagy kazamatáknál)
+    reward_type:
+        - egyszeru/kis: "sebzes" vagy "eletero"
+        - nagy: None
     """
 
-    name: str
-    dungeon_type: str
-    simple_cards: List[str]
-    leader_name: Optional[str]
-    reward: Optional[str]
+    def __init__(
+        self, name, kind, simple_card_names, leader_name=None, reward_type=None
+    ):
+        self.name = name
+        self.kind = kind
+        self.simple_card_names = list(simple_card_names)
+        self.leader_name = leader_name
+        self.reward_type = reward_type
+
+    def card_sequence(self, world):
+        """
+        Visszaadja a kazamata kártyáit CardDefinition listaként, a világ alapján.
+        """
+
+        cards = []
+        for name in self.simple_card_names:
+            cards.append(world.get_simple_card(name))
+        if self.leader_name:
+            cards.append(world.get_leader_card(self.leader_name))
+        return cards
 
 
-@dataclass
+class World:
+    """
+    A világ: sima kártyák, vezérkártyák, kazamaták.
+
+    A sima kártyák és vezérek nevei egyediek a világon belül.
+    """
+
+    def __init__(self):
+        self.simple_cards = {}  # név -> CardDefinition
+        self.leader_cards = {}  # név -> CardDefinition
+        self.dungeons = {}  # név -> Dungeon
+        # dict-ek beillesztési sorrendje megmarad (jó exporthoz/mentéshez)
+
+    # Kártyák hozzáadása
+
+    def add_simple_card(self, name, damage, health, element):
+        if name in self.simple_cards or name in self.leader_cards:
+            print(f"Már létezik ilyen nevű kártya: {name}")
+            return
+
+        self.simple_cards[name] = CardDefinition(name, damage, health, element)
+
+    def add_leader_card(self, name, base_card_name, mode):
+        """
+        Vezérkártya hozzáadása.
+
+        mode:
+            - 'sebzes':  dupla sebzés
+            - 'eletero': dupla életerő
+        """
+
+        if name in self.simple_cards or name in self.leader_cards:
+            print(f"Már létezik ilyen nevű kártya: {name}")
+            return
+
+        # TODO: HIBAKEZELÉS
+
+        base = self.get_simple_card(base_card_name)
+        if mode == "sebzes":
+            damage = base.damage * 2
+            health = base.health
+        elif mode == "eletero":
+            damage = base.damage
+            health = base.health * 2
+        else:
+            print(f"Ismeretlen vezér mod: {mode}")
+            return
+
+        self.leader_cards[name] = CardDefinition(name, damage, health, base.element)
+
+    # Kazamata kezelés
+
+    def add_dungeon(self, dungeon):
+        if dungeon.name in self.dungeons:
+            print(f"Már létezik ilyen nevű kazamata: {dungeon.name}")
+            return
+
+        self.dungeons[dungeon.name] = dungeon
+
+    # Lekérdezések
+
+    def get_simple_card(self, name):
+        try:
+            return self.simple_cards[name]
+        except KeyError:
+            print(f"Ismeretlen sima kártya: {name}")
+
+    def get_leader_card(self, name):
+        try:
+            return self.leader_cards[name]
+        except KeyError:
+            print(f"Ismeretlen vezér kártya: {name}")
+
+    def get_dungeon(self, name):
+        try:
+            return self.dungeons[name]
+        except KeyError:
+            print(f"Ismeretlen kazamata: {name}")
+
+    # Iterátorok (export / mentés megkönnyítésére)
+
+    def iter_simple_cards(self):
+        return self.simple_cards.values()
+
+    def iter_leader_cards(self):
+        return self.leader_cards.values()
+
+    def iter_dungeons(self):
+        return self.dungeons.values()
+
+
 class Player:
     """
-    A játékos állapota: gyűjtemény + pakli.
+    Játékos: gyűjtemény + aktuális pakli.
+
+    - collection: név -> CardDefinition (ezek módosulhatnak a nyeremények hatására)
+    - deck: kártyanevek listája, sorrendben
     """
 
-    collection: Dict[str, Card]
-    collection_order: List[str]
-    deck: List[str]  # kártyanevek a gyűjteményből
-
-    def __init__(self) -> None:
+    def __init__(self):
         self.collection = {}
-        self.collection_order = []
         self.deck = []
 
-    def add_to_collection(self, card: Card) -> None:
-        if card.name in self.collection:
-            return
-        self.collection[card.name] = card
-        self.collection_order.append(card.name)
+    # Gyűjtemény kezelése
 
-    def max_deck_size(self) -> int:
+    def add_card_from_world(self, world, card_name):
         """
-        A pakli maximális mérete: a gyűjtemény fele (felfelé kerekítve).
+        Sima kártyát ad a gyűjteményhez a világból, ha még nincs benne.
+
+        True-t ad vissza, ha új kártya került be, False-t, ha már benne volt.
         """
 
-        collection_size = len(self.collection_order)
-        return (collection_size + 1) // 2
-
-    def set_deck(self, card_names: List[str]) -> bool:
-        """
-        Új pakli beállítása. Visszatérés: sikerült-e.
-        """
-
-        if len(card_names) > self.max_deck_size():
+        if card_name in self.collection:
             return False
 
+        base = world.get_simple_card(card_name)
+        self.collection[card_name] = base.copy()
+
+        return True
+
+    # Pakli kezelése
+
+    def max_deck_size(self):
+        """
+        A pakli maximális mérete: a gyűjtemény fele felfelé kerekítve.
+        """
+
+        n = len(self.collection)
+        return (n + 1) // 2
+
+    def set_deck(self, card_names):
+        """
+        Pakli beállítása.
+
+        Csak a gyűjteményben lévő és egyedi neveket vesszük figyelembe,
+        és maximum a gyűjtemény felét (felfelé kerekítve).
+        """
+
+        unique = []
+        seen = set()
         for name in card_names:
             if name not in self.collection:
-                return False
+                print(f"Kártya nincs a gyűjteményben: {name}")
+                # egyszerű hibatűrés: kihagyjuk
+                continue
 
-        self.deck = list(card_names)
-        return True
+            if name in seen:
+                print(f"Kártya már van a gyűjteményben: {name}")
+                continue
+
+            seen.add(name)
+            unique.append(name)
+            if len(unique) >= self.max_deck_size():
+                break
+
+        if not unique:
+            print("A pakli üres vagy nem tartalmaz érvényes lapot.")
+            return
+
+        self.deck = unique
+
+    def has_deck(self):
+        return bool(self.deck)
+
+
+class GameState:
+    """
+    Játékos állapot egy adott játékkörnyezetben, nehézségi szinttel.
+
+    Ez az, amit menteni/betölteni kell:
+      - player (gyűjtemény + aktuális pakli)
+      - difficulty (0..10)
+      - environment_name (honnan indult a játék)
+    """
+
+    def __init__(self, player, difficulty, environment_name=None):
+        self.player = player
+        self.difficulty = int(difficulty)
+
+        if self.difficulty < 0:
+            self.difficulty = 0
+        if self.difficulty > 10:
+            self.difficulty = 10
+
+        self.environment_name = environment_name

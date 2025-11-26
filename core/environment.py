@@ -1,129 +1,53 @@
-import json
-
-from typing import Dict, Any
-
-from .gamestate import GameState
-from .models import parse_element
+from .models import Player, GameState
 
 
-ENVIRONMENT_VERSION = 1
-
-
-def save_environment(game: GameState, file_path: str) -> None:
+class GameEnvironment:
     """
-    Játékkörnyezet mentése JSON-be.
+    Játékkörnyezet: világ + kezdő játékos gyűjtemény.
 
-    - világ sima kártyái
-    - vezérek (aktuális sebzés/életerő/elem)
-    - kazamaták
-    - kezdő gyűjtemény (névlista)
+      - Játékmester hozza létre a világot (sima kártyák, vezérek, kazamaták),
+      - valamint egy kezdő gyűjteményt.
+      - Ezeket együtt kell tudni menteni / betölteni (storage modul).
+
+    Az environment neve tetszőleges.
     """
 
-    world = game.world
-    player = game.player
+    def __init__(self, name, world, starting_collection):
+        """
+        starting_collection: név -> CardDefinition (Player.collection formátumban)
+        """
 
-    data: Dict[str, Any] = {
-        "version": ENVIRONMENT_VERSION,
-        "simple_cards": [],
-        "leaders": [],
-        "dungeons": [],
-        "starting_collection": list(player.collection_order),
-    }
+        self.name = name
+        self.world = world
+        self.starting_collection = starting_collection  # dict
 
-    for name in world.simple_order:
-        card = world.simple_cards[name]
-        data["simple_cards"].append(
-            {
-                "name": card.name,
-                "damage": card.damage,
-                "health": card.health,
-                "element": card.element,
-            }
-        )
+    @staticmethod
+    def from_world_and_player(name, world, player):
+        """
+        Segédfüggvény: már létező világ + játékos gyűjtemény alapján
+        épít egy játékkörnyezetet.
+        """
 
-    for name in world.leader_order:
-        card = world.leaders[name]
-        data["leaders"].append(
-            {
-                "name": card.name,
-                "damage": card.damage,
-                "health": card.health,
-                "element": card.element,
-            }
-        )
+        # másolat, hogy ne legyen közvetlen összekapcsolva
+        starting_collection = {}
+        for card in player.collection.values():
+            starting_collection[card.name] = card.copy()
 
-    for name in world.dungeon_order:
-        dungeon = world.dungeons[name]
-        data["dungeons"].append(
-            {
-                "name": dungeon.name,
-                "type": dungeon.dungeon_type,
-                "simple_cards": list(dungeon.simple_cards),
-                "leader": dungeon.leader_name,
-                "reward": dungeon.reward,
-            }
-        )
+        return GameEnvironment(name, world, starting_collection)
 
-    with open(file_path, "w", encoding="utf-8") as output_file:
-        json.dump(data, output_file, ensure_ascii=False, indent=4)
+    def new_game(self, difficulty):
+        """
+        Új játék indítása az adott környezet alapján.
 
+        - létrejön egy új Player
+        - a starting_collection másolatát kapja meg
+        - még NINCS paklija, azt később kell beállítani
+        - visszaad egy GameState-et
+        """
 
-def load_environment(file_path: str) -> GameState:
-    """
-    Játékkörnyezet betöltése JSON-ből új GameState példányba.
+        new_player = Player()
+        for card in self.starting_collection.values():
+            new_player.collection[card.name] = card.copy()
 
-    A játékos gyűjteménye a starting_collection lista alapján áll össze.
-    Pakli üresen indul.
-    Nehézség: 0 (új játék indításakor a játékos adja meg).
-    """
-
-    with open(file_path, "r", encoding="utf-8") as input_file:
-        data = json.load(input_file)
-
-    game = GameState()
-    world = game.world
-
-    # Sima kártyák
-    for card_data in data.get("simple_cards", []):
-        element_text = parse_element(card_data["element"])
-        world.add_simple_card(
-            card_data["name"],
-            int(card_data["damage"]),
-            int(card_data["health"]),
-            element_text,
-        )
-
-    # Vezérek
-    for card_data in data.get("leaders", []):
-        element_text = parse_element(card_data["element"])
-        world.add_leader_direct(
-            card_data["name"],
-            int(card_data["damage"]),
-            int(card_data["health"]),
-            element_text,
-        )
-
-    # Kazamaták
-    for dungeon_data in data.get("dungeons", []):
-        dungeon_type = dungeon_data["type"]
-        simple_cards = list(dungeon_data.get("simple_cards", []))
-        leader_name = dungeon_data.get("leader")
-        reward_type = dungeon_data.get("reward")
-        world.add_dungeon(
-            dungeon_data["name"],
-            dungeon_type,
-            simple_cards,
-            leader_name,
-            reward_type,
-        )
-
-    # Kezdő gyűjtemény
-    game.player.collection = {}
-    game.player.collection_order = []
-    game.player.deck = []
-
-    for name in data.get("starting_collection", []):
-        game.add_collection_card_from_world(name)
-
-    game.difficulty = 0
-    return game
+        # pakli üresen hagyva
+        return GameState(new_player, difficulty, environment_name=self.name)

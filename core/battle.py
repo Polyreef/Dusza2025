@@ -1,327 +1,208 @@
 import random
 
-from dataclasses import dataclass
-from typing import List, Optional
-
-from .gamestate import GameState
-from .models import Card, Dungeon, Player
+from core import ELEMENT_ORDER
 
 
-@dataclass
-class BattleCard:
+def damage_multiplier(att_type, def_type):
     """
-    Egy harcban résztvevő (ideiglenes) lap.
-    A gyűjteményben lévő Card objektumot NEM módosítjuk, itt csak a harc közbeni állapotot tároljuk.
-    """
+    Típus-alapú szorzó: 2, 1 vagy 0.5.
 
-    name: str
-    base_damage: int
-    base_health: int
-    element: str
-    current_health: int
-    owner_side: str  # "kazamata" vagy "jatekos"
-
-    @staticmethod
-    def from_card(card: Card, owner_side: str) -> "BattleCard":
-        return BattleCard(
-            name=card.name,
-            base_damage=card.damage,
-            base_health=card.health,
-            element=card.element,
-            current_health=card.health,
-            owner_side=owner_side,
-        )
-
-
-@dataclass
-class BattleOutcome:
-    player_won: bool
-    reward_type: Optional[str]  # None nagy kazamatánál
-    reward_card: Optional[Card]  # fejlődő vagy új lap
-    log_lines: List[str]
-
-
-# Elem erősségek
-
-
-def type_multiplier(attacker_element: str, defender_element: str) -> float:
-    """
-    Elem-erősségi rendszer:
-
-    föld   -> erős levegő és tűz ellen, gyenge víz ellen
-    levegő -> erős föld és víz ellen, gyenge tűz ellen
-    víz    -> erős levegő és tűz ellen, gyenge föld ellen
-    tűz    -> erős víz és föld ellen, gyenge levegő ellen
+    ELEMENT_ORDER = ["levego", "fold", "tuz", "viz"]
+    - szomszédos: "erős" -> 2x
+    - átellenes: "gyenge" -> 0.5x
+    - azonos: 1x
     """
 
-    strong_map = {
-        "fold": {"levego", "tuz"},
-        "levego": {"fold", "viz"},
-        "viz": {"levego", "tuz"},
-        "tuz": {"viz", "fold"},
-    }
+    if att_type == def_type:
+        return 1
+    try:
+        i_att = ELEMENT_ORDER.index(att_type)
+        i_def = ELEMENT_ORDER.index(def_type)
+    except ValueError as e:
+        # ismeretlen típus esetén inkább ne módosítsuk
+        print(f"Hiba: {e}")
+        return 1
 
-    weak_map = {
-        "fold": {"viz"},
-        "levego": {"tuz"},
-        "viz": {"fold"},
-        "tuz": {"levego"},
-    }
-
-    if defender_element in strong_map.get(attacker_element, set()):
-        return 2.0
-    if defender_element in weak_map.get(attacker_element, set()):
-        return 0.5
-    return 1.0
-
-
-# Sebzés számítása nehézséggel
-
-
-def effective_damage(
-    base_damage: int,
-    owner_side: str,
-    difficulty_level: int,
-    random_generator: random.Random,
-) -> int:
-    """
-    Nehézségi szint miatti módosítás.
-    Teszt módban difficulty_level = 0, így nem változik semmi.
-    """
-
-    if difficulty_level <= 0:
-        return base_damage
-
-    if owner_side == "kazamata":
-        # kazamataSebzesUj = round( base * (1 + rnd() * n/10) )
-        factor = 1.0 + random_generator.random() * (difficulty_level / 10.0)
+    diff = (i_att - i_def) % len(ELEMENT_ORDER)
+    if diff == 2:
+        return 0.5  # gyenge
     else:
-        # jatekosSebzesUj = round( base * (1 - rnd() * n/20) )
-        factor = 1.0 - random_generator.random() * (difficulty_level / 20.0)
-
-    damage = round(base_damage * factor)
-    return max(0, damage)
+        # minden más különböző típus szomszédos -> erős
+        return 2
 
 
-def perform_attack(
-    attacker_card: BattleCard,
-    defender_card: BattleCard,
-    difficulty_level: int,
-    random_generator: random.Random,
-) -> int:
+class BattleResult:
     """
-    Egy támadás lejátszása, visszaadja a tényleges sebzést.
+    Harc eredménye.
+
+    - log_lines: a harc naplója
+    - outcome: "win" vagy "lose"
+    - last_player_attacker_name: a játékos utolsó támadó lapja neve
     """
 
-    damage = effective_damage(
-        attacker_card.base_damage,
-        attacker_card.owner_side,
-        difficulty_level,
-        random_generator,
-    )
-    multiplier = type_multiplier(attacker_card.element, defender_card.element)
-    if multiplier == 2.0:
-        damage *= 2
-    elif multiplier == 0.5:
-        damage = damage // 2  # lefelé kerekítés
-
-    defender_card.current_health -= damage
-    if defender_card.current_health < 0:
-        defender_card.current_health = 0
-    return damage
+    def __init__(self, log_lines, outcome, last_player_attacker_name):
+        self.log_lines = log_lines
+        self.outcome = outcome
+        self.last_player_attacker_name = last_player_attacker_name
 
 
-# Sorok felépítése
-
-
-def build_enemy_line(world, dungeon: Dungeon) -> List[BattleCard]:
+def run_battle(world, player, dungeon, difficulty=0, rng=None):
     """
-    Kazamata oldalának felépítése a világ kártyáiból.
+    Levezényli a harcot. Visszaad egy BattleResult-ot.
+
+    difficulty: 0..10
+        - 0 esetén a sebzések úgy működnek, mint az I. fordulóban.
+        - >0 esetén a játékos / kazamata sebzését minden ütésnél
+          véletlenszerűen módosítjuk a megadott képletek szerint.
+
+    rng: opcionális random.Random példány, teszteléshez kontrollált.
     """
 
-    result: List[BattleCard] = []
-    for name in dungeon.simple_cards:
-        base_card = world.simple_cards[name]
-        result.append(BattleCard.from_card(base_card, owner_side="kazamata"))
+    if not player.has_deck():
+        print("Hiba: Nincs összeállított pakli")
+        return
 
-    if dungeon.leader_name:
-        base_card = world.leaders[dungeon.leader_name]
-        result.append(BattleCard.from_card(base_card, owner_side="kazamata"))
+    if rng is None:
+        rng = random.Random()
 
-    return result
+    difficulty = int(difficulty)
+    if difficulty < 0:
+        difficulty = 0
+    if difficulty > 10:
+        difficulty = 10
 
+    # Pakli: a játékos gyűjteményéből, az aktuális értékekkel
+    player_cards = [player.collection[name] for name in player.deck]
+    # Kazamata kártyái a világból
+    enemy_cards = dungeon.card_sequence(world)
 
-def build_player_line(player: Player) -> List[BattleCard]:
-    """
-    Játékos oldalának felépítése a pakliból.
-    """
+    # Állapot
+    p_index = 0
+    e_index = 0
+    p_active = None
+    e_active = None
+    p_hp = 0
+    e_hp = 0
 
-    result: List[BattleCard] = []
-    for name in player.deck:
-        base_card = player.collection[name]
-        result.append(BattleCard.from_card(base_card, owner_side="jatekos"))
-    return result
+    log_lines = []
+    log_lines.append(f"harc kezdodik;{dungeon.name}")
 
-
-# Fő harc függvény
-
-
-def run_battle(
-    game: GameState,
-    dungeon_name: str,
-    difficulty_level: Optional[int] = None,
-    random_generator: Optional[random.Random] = None,
-) -> BattleOutcome:
-    """
-    Egy teljes harc lejátszása. A napló sorait és az eredményt adja vissza.
-
-    difficulty_level:
-        - ha None: a game.difficulty értéket használjuk
-        - ha szám: azt használjuk (0 teszt módban, 0..10 játék módban).
-    """
-
-    if random_generator is None:
-        random_generator = random.Random()
-
-    if difficulty_level is None:
-        difficulty_level = game.difficulty
-
-    world = game.world
-    player = game.player
-    dungeon = world.dungeons[dungeon_name]
-
-    enemy_line = build_enemy_line(world, dungeon)
-    player_line = build_player_line(player)
-
-    log_lines: List[str] = [f"harc kezdodik;{dungeon.name}"]
-
-    # Ha bármelyik oldalnak nincs lapja, a játékos veszít.
-    if not enemy_line or not player_line:
-        return BattleOutcome(False, None, None, log_lines)
-
-    enemy_index = 0
-    player_index = 0
-    enemy_current: Optional[BattleCard] = None
-    player_current: Optional[BattleCard] = None
-
-    round_number = 1
-    last_attacking_player_card_name: Optional[str] = None
+    round_no = 1
+    last_player_attacker_name = None
+    outcome = None
 
     while True:
-        # Kazamata akció
-        if enemy_current is None:
-            if enemy_index >= len(enemy_line):
-                # Nincs több kazamata lap -> játékos nyert
+        # Kazamata köre
+        if e_active is None:
+            if e_index >= len(enemy_cards):
+                # már nincs több kazamata lap -> játékos nyert
+                outcome = "win"
                 break
-            enemy_current = enemy_line[enemy_index]
-            enemy_index += 1
+
+            e_active = enemy_cards[e_index]
+            e_index += 1
+            e_hp = e_active.health
             log_lines.append(
-                f"{round_number}.kor;kazamata;kijatszik;"
-                f"{enemy_current.name};{enemy_current.base_damage};"
-                f"{enemy_current.base_health};{enemy_current.element}"
+                f"{round_no}.kor;kazamata;kijatszik;{e_active.name};{e_active.damage};{e_hp};{e_active.element}"
             )
         else:
-            if player_current is None and player_index < len(player_line):
-                # Nincs még kint játékos lap, de lesz - majd a saját körében kijátssza.
-                pass
-            elif player_current is None and player_index >= len(player_line):
-                # Nincs több játékos lap -> játékos vesztett.
-                break
+            # Támad, de csak akkor, ha a játékosnak van (már) aktív lapja
+            if p_active is None:
+                # ha nincs aktív lap és nincs több a pakliban, akkor a játékos veszített
+                if p_index >= len(player_cards):
+                    outcome = "lose"
+                    break
+                # egyébként (pl. a harc legelső körében) ilyenkor nem támad
             else:
-                damage = perform_attack(
-                    enemy_current,
-                    player_current,
-                    difficulty_level,
-                    random_generator,
-                )
+                dmg = apply_damage(e_active, p_active, difficulty, rng, is_enemy=True)
+                p_hp = max(0, p_hp - dmg)
                 log_lines.append(
-                    f"{round_number}.kor;kazamata;tamad;"
-                    f"{enemy_current.name};{damage};"
-                    f"{player_current.name};{player_current.current_health}"
+                    f"{round_no}.kor;kazamata;tamad;{e_active.name};{dmg};{p_active.name};{p_hp}"
                 )
-                if player_current.current_health == 0:
-                    player_current = None
-                    if player_index >= len(player_line):
-                        # Utolsó játékos lap is meghalt
-                        break
+                if p_hp <= 0:
+                    p_active = None  # a lap elesett
 
-        # Játékos akció
-        enemy_alive_exists = enemy_current is not None or enemy_index < len(enemy_line)
-        if not enemy_alive_exists:
-            # Nincs több kazamata lap -> játékos nyert
+        if outcome is not None:
             break
 
-        if player_current is None:
-            if player_index >= len(player_line):
-                # Nincs több játékos lap -> játékos vesztett.
+        # Játékos köre
+        if p_active is None:
+            if p_index >= len(player_cards):
+                outcome = "lose"
                 break
 
-            player_current = player_line[player_index]
-            player_index += 1
+            p_active = player_cards[p_index]
+            p_index += 1
+            p_hp = p_active.health
             log_lines.append(
-                f"{round_number}.kor;jatekos;kijatszik;"
-                f"{player_current.name};{player_current.base_damage};"
-                f"{player_current.base_health};{player_current.element}"
+                f"{round_no}.kor;jatekos;kijatszik;{p_active.name};{p_active.damage};{p_hp};{p_active.element}"
             )
         else:
-            damage = perform_attack(
-                player_current,
-                enemy_current,
-                difficulty_level,
-                random_generator,
-            )
-            log_lines.append(
-                f"{round_number}.kor;jatekos;tamad;"
-                f"{player_current.name};{damage};"
-                f"{enemy_current.name};{enemy_current.current_health}"
-            )
-            last_attacking_player_card_name = player_current.name
-            if enemy_current.current_health == 0:
-                enemy_current = None
-                if enemy_index >= len(enemy_line):
-                    # Utolsó kazamata lap is meghalt
+            if e_active is None:
+                # ha nincs aktív kazamata lap
+                if e_index >= len(enemy_cards):
+                    outcome = "win"
+                    last_player_attacker_name = p_active.name
                     break
-
-        round_number += 1
-
-    # Eredmény és jutalom
-    player_has_cards = (player_current is not None) or (player_index < len(player_line))
-    enemy_has_cards = (enemy_current is not None) or (enemy_index < len(enemy_line))
-
-    player_won = player_has_cards and not enemy_has_cards
-    reward_type: Optional[str] = None
-    reward_card: Optional[Card] = None
-
-    if player_won:
-        # Egyszerű / kis kazamata: utolsó támadó játékos lap fejlődik.
-        if dungeon.dungeon_type in ("egyszeru", "kis"):
-            reward_type = dungeon.reward
-            if last_attacking_player_card_name is not None and reward_type is not None:
-                original = player.collection.get(last_attacking_player_card_name)
-                if original is not None:
-                    if reward_type == "sebzes":
-                        original.damage += 1
-                    elif reward_type == "eletero":
-                        original.health += 2
-                    reward_card = original
-
-            if reward_type == "sebzes" and reward_card is not None:
-                log_lines.append(f"jatekos nyert;sebzes;{reward_card.name}")
-            elif reward_type == "eletero" and reward_card is not None:
-                log_lines.append(f"jatekos nyert;eletero;{reward_card.name}")
+                # különben a következő kör elején játszik majd ki új lapot a kazamata
             else:
-                # Biztonsági fallback, ha valamiért nincs reward_card
-                log_lines.append("jatekos nyert")
-        else:
-            # Nagy kazamata - új sima kártya jár, ha van még.
-            new_card = game.world.first_missing_simple_card_for_player(game.player)
-            if new_card is not None:
-                game.player.add_to_collection(new_card)
-                reward_card = new_card
-                log_lines.append(f"jatekos nyert;{new_card.name}")
-            else:
-                log_lines.append("jatekos nyert")
+                dmg = apply_damage(p_active, e_active, difficulty, rng, is_enemy=False)
+                e_hp = max(0, e_hp - dmg)
+                log_lines.append(
+                    f"{round_no}.kor;jatekos;tamad;{p_active.name};{dmg};{e_active.name};{e_hp}"
+                )
+                last_player_attacker_name = p_active.name
+                if e_hp <= 0:
+                    e_active = None
+                    if e_index >= len(enemy_cards):
+                        outcome = "win"
+                        break
+
+        if outcome is not None:
+            break
+
+        round_no += 1
+
+    return BattleResult(log_lines, outcome, last_player_attacker_name)
+
+
+def apply_damage(att_card, def_card, difficulty, rng, is_enemy):
+    """
+    Kiszámítja a tényleges sebzést (típus + nehézségi szint figyelembevételével).
+
+    difficulty: 0..10
+    is_enemy: True, ha a kazamata üt; False, ha a játékos üt.
+
+    Képletek:
+        KazamataSebzes_uj = round(KazamataSebzes * (1 + rnd() * n/10))
+        JatekosSebzes_uj  = round( JatekosSebzes * (1 - rnd() * n/20))
+    """
+
+    # Típus-szorzó alkalmazása
+    mult = damage_multiplier(att_card.element, def_card.element)
+    base_damage = att_card.damage
+    if mult == 2:
+        base_damage *= 2
+    elif mult == 0.5:
+        base_damage = base_damage // 2
+
+    # Ha nincs nehézség (0), azonnal visszaadjuk
+    if difficulty <= 0:
+        return base_damage
+
+    # Véletlen módosítás
+    rnd = rng.random()  # [0, 1)
+    if is_enemy:
+        # kazamata
+        factor = 1 + rnd * (difficulty / 10.0)
+        new_damage = round(base_damage * factor)
     else:
-        log_lines.append("jatekos vesztett")
+        # játékos
+        factor = 1 - rnd * (difficulty / 20.0)
+        new_damage = round(base_damage * factor)
 
-    return BattleOutcome(player_won, reward_type, reward_card, log_lines)
+    # Biztonsági korlát: minimum 0 sebzés
+    if new_damage < 0:
+        new_damage = 0
+
+    return new_damage
