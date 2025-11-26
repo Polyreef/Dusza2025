@@ -1,3 +1,9 @@
+import os
+
+# Ne írja ki az üdvözlő üzenetet.
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
+
+
 import pygame
 
 from .classes.titlescreen import TitleScreen

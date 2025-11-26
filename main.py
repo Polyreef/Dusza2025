@@ -1,7 +1,7 @@
 import sys
 
-from test import run_test_mode
-from game.test import run_ui_mode
+from game.run_game import run_ui_mode
+from run_test import run_test_mode
 
 
 def main() -> None:

@@ -107,15 +107,20 @@ def handle_export_world(current_game: GameState, file_path: str) -> None:
                 f"kartya;{card.name};{card.damage};{card.health};{card.element}\n"
             )
 
+        output_file.write("\n")
+
         for name in current_game.world.leader_order:
             card = current_game.world.leaders[name]
             output_file.write(
                 f"vezer;{card.name};{card.damage};{card.health};{card.element}\n"
             )
 
+        output_file.write("\n")
+
         for name in current_game.world.dungeon_order:
             dungeon = current_game.world.dungeons[name]
             base_text = f"kazamata;{dungeon.dungeon_type};{dungeon.name};"
+
             if dungeon.dungeon_type == "egyszeru":
                 base_text += f"{dungeon.simple_cards[0]};{dungeon.reward}"
             elif dungeon.dungeon_type == "kis":
@@ -124,6 +129,7 @@ def handle_export_world(current_game: GameState, file_path: str) -> None:
             else:
                 simple_text = ",".join(dungeon.simple_cards)
                 base_text += f"{simple_text};{dungeon.leader_name}"
+
             output_file.write(base_text + "\n")
 
 
@@ -138,6 +144,8 @@ def handle_export_player(current_game: GameState, file_path: str) -> None:
             output_file.write(
                 f"gyujtemeny;{card.name};{card.damage};{card.health};{card.element}\n"
             )
+
+        output_file.write("\n")
 
         for name in current_game.player.deck:
             output_file.write(f"pakli;{name}\n")
