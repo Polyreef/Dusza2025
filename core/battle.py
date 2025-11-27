@@ -3,9 +3,10 @@ import random
 from typing import Literal
 
 from core import ELEMENT_ORDER
+from core.models import CardDefinition, World, Player, Dungeon
 
 
-def damage_multiplier(att_type, def_type) -> float:
+def damage_multiplier(att_type: str, def_type: str) -> float:
     """
     Típus-alapú szorzó: 2, 1 vagy 0.5.
 
@@ -42,14 +43,23 @@ class BattleResult:
     - last_player_attacker_name: a játékos utolsó támadó lapja neve
     """
 
-    def __init__(self, log_lines, outcome, last_player_attacker_name):
+    def __init__(
+        self,
+        log_lines: list[str],
+        outcome: Literal["win", "lose"],
+        last_player_attacker_name: str | None,
+    ):
         self.log_lines = log_lines
         self.outcome = outcome
         self.last_player_attacker_name = last_player_attacker_name
 
 
 def run_battle(
-    world, player, dungeon, difficulty=0, rng=None
+    world: World,
+    player: Player,
+    dungeon: Dungeon,
+    difficulty: int = 0,
+    rng: random.Random | None = None,
 ) -> BattleResult | Literal[False]:
     """
     Levezényli a harcot. Visszaad egy BattleResult-ot.
@@ -172,7 +182,13 @@ def run_battle(
     return BattleResult(log_lines, outcome, last_player_attacker_name)
 
 
-def apply_damage(att_card, def_card, difficulty, rng, is_enemy) -> float:
+def apply_damage(
+    att_card: CardDefinition,
+    def_card: CardDefinition,
+    difficulty: int,
+    rng: random.Random,
+    is_enemy: bool,
+) -> float:
     """
     Kiszámítja a tényleges sebzést (típus + nehézségi szint figyelembevételével).
 

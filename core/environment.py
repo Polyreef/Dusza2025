@@ -1,4 +1,4 @@
-from .models import Player, GameState
+from core.models import Player, GameState, World
 
 
 class GameEnvironment:
@@ -12,7 +12,7 @@ class GameEnvironment:
     Az environment neve tetszőleges.
     """
 
-    def __init__(self, name, world, starting_collection):
+    def __init__(self, name: str, world: World, starting_collection: dict):
         """
         starting_collection: név -> CardDefinition (Player.collection formátumban)
         """
@@ -22,7 +22,7 @@ class GameEnvironment:
         self.starting_collection = starting_collection  # dict
 
     @staticmethod
-    def from_world_and_player(name, world, player):
+    def from_world_and_player(name: str, world: World, player: Player):
         """
         Segédfüggvény: már létező világ + játékos gyűjtemény alapján
         épít egy játékkörnyezetet.

@@ -1,7 +1,7 @@
 import json
 
-from .models import World, CardDefinition, Dungeon, Player, GameState
-from .environment import GameEnvironment
+from core.environment import GameEnvironment
+from core.models import World, CardDefinition, Dungeon, Player, GameState
 
 
 # Segédfüggvények: CardDefinition, Dungeon
