@@ -1,0 +1,56 @@
+{
+    "button": {
+        "misc": {
+            "auto_scale_images": "1",
+            "border_width": "0",
+            "shadow_width": "0"
+        },
+        "colours": {
+            "normal_bg": "rgba(0, 0, 0, 0)",
+            "hovered_bg": "rgba(0, 0, 0, 0)",
+            "disabled_bg": "rgba(0, 0, 0, 0)",
+            "selected_bg": "rgba(0, 0, 0, 0)",
+            "active_bg": "rgba(0, 0, 0, 0)"
+        }
+    },
+    "panel": {
+        "misc": {
+            "auto_scale_images": "1",
+            "border_width": "0",
+            "shadow_width": "0"
+        },
+        "colours": {
+            "dark_bg": "rgba(0, 0, 0, 0)"
+        }
+    },
+    "#player_btn": {
+        "images": {
+            "normal_image": {
+                "path": "Assets/ALL Buttons/NoHoverPlayer.png"
+            },
+            "hovered_image": {
+                "path": "Assets/ALL Buttons/HoverPlayer.png"
+            }
+        }
+    },
+    "#master_btn": {
+        "images": {
+            "normal_image": {
+                "path": "Assets/ALL Buttons/NoHoverGamemaster.png"
+            },
+            "hovered_image": {
+                "path": "Assets/ALL Buttons/HoverGamemaster.png"
+            }
+        }
+    },
+    "#back_btn": {
+        "images": {
+            "normal_image": {
+                "path": "Assets/ALL Buttons/NoHoverBack.png"
+            },
+            "hovered_image": {
+                "path": "Assets/ALL Buttons/HoverBack.png"
+            }
+        }
+    }
+}

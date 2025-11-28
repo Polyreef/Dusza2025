@@ -12,7 +12,9 @@ Vajon a gondosan kidolgozott stratégiád diadalt arat, vagy a kazamaták mélye
 
 A játék futtatásához **PyGame**-re van szükség.
 
-Telepítsd a Python-t, majd a PyGame csomagot.
+Telepítsd a Python-t, majd a PyGame és pygame_gui csomagot.
+
+`pip install pygame pygame_gui`
 
 ## Használat
 

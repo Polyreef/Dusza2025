@@ -1,38 +1,50 @@
-from __future__ import annotations
+import pygame
 
-from typing import Dict, Optional
+import game
 
 
 class SceneManager:
-    """
-    Egyszerű scene manager.
-    """
+    def __init__(self, screen):
+        self.screen = screen
 
-    def __init__(self, game: "Game"):
-        self.game = game
-        self.scenes: Dict[str, "Scene"] = {}
-        self.current: Optional["Scene"] = None
-        self.current_name: Optional[str] = None
+        self.scenes = {}
+        self.current_scene = None
 
-    def register(self, name: str, scene: "Scene"):
-        self.scenes[name] = scene
+        self.clock = pygame.time.Clock()
+        self.is_running = True
 
-    def go_to(self, name: str):
-        if self.current:
-            self.current.exit()
+    def add_scene(self, scene_name, scene):
+        self.scenes[scene_name] = scene
 
-        self.current_name = name
-        self.current = self.scenes[name]
-        self.current.enter()
+    def switch_scene(self, scene_name):
+        if self.current_scene:
+            self.current_scene.cleanup()
 
-    def handle_event(self, event):
-        if self.current:
-            self.current.handle_event(event)
+        self.current_scene = self.scenes.get(scene_name)
 
-    def update(self, dt: float):
-        if self.current:
-            self.current.update(dt)
+        if self.current_scene:
+            self.current_scene.setup()
 
-    def draw(self, surface):
-        if self.current:
-            self.current.draw(surface)
+    def quit(self):
+        self.is_running = False
+
+    def run_frame(self):
+        time_delta = self.clock.tick(60) / 1000.0
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.quit()
+            elif self.current_scene:
+                self.current_scene.handle_event(event)
+
+        if self.current_scene:
+            self.current_scene.update(time_delta)
+            self.current_scene.render()
+
+    def scale_screen(self, new_scaling):
+        game.scaling = new_scaling
+        self.screen = pygame.display.set_mode(
+            (game.WINDOW_WIDTH * game.scaling, game.WINDOW_HEIGHT * game.scaling)
+        )
+        if self.current_scene:
+            self.current_scene.rescale(game.scaling)

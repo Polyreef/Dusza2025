@@ -1,0 +1,190 @@
+{
+    "name": "classic",
+    "world": {
+        "simple_cards": [
+            {
+                "name": "Arin",
+                "damage": 2,
+                "health": 5,
+                "element": "fold"
+            },
+            {
+                "name": "Liora",
+                "damage": 2,
+                "health": 4,
+                "element": "levego"
+            },
+            {
+                "name": "Nerun",
+                "damage": 3,
+                "health": 3,
+                "element": "tuz"
+            },
+            {
+                "name": "Sella",
+                "damage": 2,
+                "health": 6,
+                "element": "viz"
+            },
+            {
+                "name": "Torak",
+                "damage": 3,
+                "health": 4,
+                "element": "fold"
+            },
+            {
+                "name": "Emera",
+                "damage": 2,
+                "health": 5,
+                "element": "levego"
+            },
+            {
+                "name": "Vorn",
+                "damage": 2,
+                "health": 7,
+                "element": "viz"
+            },
+            {
+                "name": "Kael",
+                "damage": 3,
+                "health": 5,
+                "element": "tuz"
+            },
+            {
+                "name": "Myra",
+                "damage": 2,
+                "health": 6,
+                "element": "fold"
+            },
+            {
+                "name": "Thalen",
+                "damage": 3,
+                "health": 5,
+                "element": "levego"
+            },
+            {
+                "name": "Isara",
+                "damage": 2,
+                "health": 6,
+                "element": "viz"
+            }
+        ],
+        "leader_cards": [
+            {
+                "name": "Lord Torak",
+                "damage": 6,
+                "health": 4,
+                "element": "fold"
+            },
+            {
+                "name": "Selia",
+                "damage": 2,
+                "health": 12,
+                "element": "viz"
+            },
+            {
+                "name": "Priestess Selia",
+                "damage": 2,
+                "health": 12,
+                "element": "viz"
+            }
+        ],
+        "dungeons": [
+            {
+                "name": "Barlangi Portya",
+                "kind": "egyszeru",
+                "simple_card_names": [
+                    "Nerun"
+                ],
+                "leader_name": null,
+                "reward_type": "sebzes"
+            },
+            {
+                "name": "Osi Szentely",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Arin",
+                    "Emera",
+                    "Sella"
+                ],
+                "leader_name": "Lord Torak",
+                "reward_type": "eletero"
+            },
+            {
+                "name": "A melyseg kiralynoje",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Liora",
+                    "Arin",
+                    "Sella",
+                    "Nerun",
+                    "Torak"
+                ],
+                "leader_name": "Priestess Selia",
+                "reward_type": null
+            }
+        ]
+    },
+    "starting_collection": [
+        {
+            "name": "Arin",
+            "damage": 2,
+            "health": 5,
+            "element": "fold"
+        },
+        {
+            "name": "Liora",
+            "damage": 2,
+            "health": 4,
+            "element": "levego"
+        },
+        {
+            "name": "Sella",
+            "damage": 2,
+            "health": 6,
+            "element": "viz"
+        },
+        {
+            "name": "Nerun",
+            "damage": 3,
+            "health": 3,
+            "element": "tuz"
+        },
+        {
+            "name": "Torak",
+            "damage": 3,
+            "health": 4,
+            "element": "fold"
+        },
+        {
+            "name": "Emera",
+            "damage": 2,
+            "health": 5,
+            "element": "levego"
+        },
+        {
+            "name": "Kael",
+            "damage": 3,
+            "health": 5,
+            "element": "tuz"
+        },
+        {
+            "name": "Myra",
+            "damage": 2,
+            "health": 6,
+            "element": "fold"
+        },
+        {
+            "name": "Thalen",
+            "damage": 3,
+            "health": 5,
+            "element": "levego"
+        },
+        {
+            "name": "Isara",
+            "damage": 2,
+            "health": 6,
+            "element": "viz"
+        }
+    ]
+}

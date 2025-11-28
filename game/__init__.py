@@ -1,0 +1,4 @@
+WINDOW_WIDTH = 200
+WINDOW_HEIGHT = 150
+
+scaling = 4  # 800x600
