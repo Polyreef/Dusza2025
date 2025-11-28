@@ -63,8 +63,15 @@ def _dungeon_from_dict(d: dict) -> Dungeon:
 
 
 def world_to_dict(world: World) -> dict:
-    simple_cards = [_card_to_dict(c) for c in world.iter_simple_cards()]
-    leader_cards = [_card_to_dict(c) for c in world.iter_leader_cards()]
+    simple_cards = [
+        {**_card_to_dict(c), "style": world.simple_styles[c.name]}
+        for c in world.iter_simple_cards()
+    ]
+    leader_cards = [
+        {**_card_to_dict(c), "style": world.leader_styles[c.name]}
+        for c in world.iter_leader_cards()
+    ]
+
     dungeons = [_dungeon_to_dict(d) for d in world.iter_dungeons()]
     return {
         "simple_cards": simple_cards,
@@ -80,9 +87,15 @@ def world_from_dict(data: dict) -> World:
         card = _card_from_dict(c)
         world.simple_cards[card.name] = card
 
+        style = c.get("style", 1)
+        world.simple_styles[card.name] = style
+
     for c in data.get("leader_cards", []):
         card = _card_from_dict(c)
         world.leader_cards[card.name] = card
+
+        style = c.get("style", 1)
+        world.leader_styles[card.name] = style
 
     for d in data.get("dungeons", []):
         dungeon = _dungeon_from_dict(d)

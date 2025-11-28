@@ -103,14 +103,16 @@ class World:
 
     def __init__(self):
         self.simple_cards = {}  # név -> CardDefinition
+        self.simple_styles = {}  # név -> 1 - 4
         self.leader_cards = {}  # név -> CardDefinition
+        self.leader_styles = {}  # név -> 1 - 2
         self.dungeons = {}  # név -> Dungeon
         # dict-ek beillesztési sorrendje megmarad (jó exporthoz/mentéshez)
 
     # Kártyák hozzáadása
 
     def add_simple_card(
-        self, name: str, damage: int, health: int, element: str
+        self, name: str, damage: int, health: int, element: str, style: int = 1
     ) -> Literal[True] | Literal[False]:
         name = name.strip()
         element = element.strip().lower()
@@ -119,16 +121,22 @@ class World:
             print(f"Már létezik ilyen nevű kártya: {name}")
             return False
 
+        if style < 1 or style > 4:
+            print(f"Érvénytelen kártya stílus: {style}")
+            return False
+
         try:
             self.simple_cards[name] = CardDefinition(name, damage, health, element)
         except ValueError as e:
             print(str(e))
             return False
 
+        self.simple_styles[name] = style
+
         return True
 
     def add_leader_card(
-        self, name: str, base_card_name: str, mode: str
+        self, name: str, base_card_name: str, mode: str, style: int = 1
     ) -> Literal[True] | Literal[False]:
         """
         Vezérkártya hozzáadása.
@@ -143,6 +151,10 @@ class World:
 
         if name in self.simple_cards or name in self.leader_cards:
             print(f"Már létezik ilyen nevű kártya: {name}")
+            return False
+
+        if style < 1 or style > 2:
+            print(f"Érvénytelen vezérkártya stílus: {style}")
             return False
 
         base = self.get_simple_card(base_card_name)
@@ -164,6 +176,8 @@ class World:
         except ValueError as e:
             print(str(e))
             return False
+
+        self.leader_styles[name] = style
 
         return True
 

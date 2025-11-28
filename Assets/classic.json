@@ -6,67 +6,78 @@
                 "name": "Arin",
                 "damage": 2,
                 "health": 5,
-                "element": "fold"
+                "element": "fold",
+                "style": 2
             },
             {
                 "name": "Liora",
                 "damage": 2,
                 "health": 4,
-                "element": "levego"
+                "element": "levego",
+                "style": 1
             },
             {
                 "name": "Nerun",
                 "damage": 3,
                 "health": 3,
-                "element": "tuz"
+                "element": "tuz",
+                "style": 1
             },
             {
-                "name": "Sella",
+                "name": "Selia",
                 "damage": 2,
                 "health": 6,
-                "element": "viz"
+                "element": "viz",
+                "style": 3
             },
             {
                 "name": "Torak",
                 "damage": 3,
                 "health": 4,
-                "element": "fold"
+                "element": "fold",
+                "style": 2
             },
             {
                 "name": "Emera",
                 "damage": 2,
                 "health": 5,
-                "element": "levego"
+                "element": "levego",
+                "style": 2
             },
             {
                 "name": "Vorn",
                 "damage": 2,
                 "health": 7,
-                "element": "viz"
+                "element": "viz",
+                "style": 4
             },
             {
                 "name": "Kael",
                 "damage": 3,
                 "health": 5,
-                "element": "tuz"
+                "element": "tuz",
+                "style": 3
             },
             {
                 "name": "Myra",
                 "damage": 2,
                 "health": 6,
-                "element": "fold"
+                "element": "fold",
+                "style": 3
             },
             {
                 "name": "Thalen",
                 "damage": 3,
                 "health": 5,
-                "element": "levego"
+                "element": "levego",
+                "style": 3
             },
             {
                 "name": "Isara",
                 "damage": 2,
                 "health": 6,
-                "element": "viz"
+                "element": "viz",
+                "style": 3
             }
         ],
         "leader_cards": [
@@ -74,19 +85,15 @@
                 "name": "Lord Torak",
                 "damage": 6,
                 "health": 4,
-                "element": "fold"
-            },
-            {
-                "name": "Selia",
-                "damage": 2,
-                "health": 12,
-                "element": "viz"
+                "element": "fold",
+                "style": 1
             },
             {
                 "name": "Priestess Selia",
                 "damage": 2,
                 "health": 12,
-                "element": "viz"
+                "element": "viz",
+                "style": 2
             }
         ],
         "dungeons": [
@@ -105,7 +112,7 @@
                 "simple_card_names": [
                     "Arin",
                     "Emera",
-                    "Sella"
+                    "Selia"
                 ],
                 "leader_name": "Lord Torak",
                 "reward_type": "eletero"
@@ -116,7 +123,7 @@
                 "simple_card_names": [
                     "Liora",
                     "Arin",
-                    "Sella",
+                    "Selia",
                     "Nerun",
                     "Torak"
                 ],
@@ -139,7 +146,7 @@
             "element": "levego"
         },
         {
-            "name": "Sella",
+            "name": "Selia",
             "damage": 2,
             "health": 6,
             "element": "viz"

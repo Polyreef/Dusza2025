@@ -13,6 +13,7 @@ from game.scene_manager import SceneManager
 
 from game.scenes.menu_scene import MenuScene
 from game.scenes.mode_scene import ModeScene
+from game.scenes.player_scene import PlayerScene
 
 
 def run_ui_mode():
@@ -33,6 +34,9 @@ def run_ui_mode():
 
     mode_scene = ModeScene(screen, scene_manager)
     scene_manager.add_scene("Mode", mode_scene)
+
+    player_scene = PlayerScene(screen, scene_manager, environment)
+    scene_manager.add_scene("Player", player_scene)
 
     scene_manager.switch_scene("Menu")
 
