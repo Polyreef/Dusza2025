@@ -1,8 +1,9 @@
 import os
 import sys
 
-from run_game import run_ui_mode
+from run_game import run_game_mode
 from run_test import run_test_mode
+from run_tool import run_tool_mode
 
 
 def main():
@@ -10,19 +11,22 @@ def main():
     Belépési pont.
 
     - <mappa>  -> teszt mód (in.txt a mappában)
-    - --ui     -> játék mód (PyGame)
+    - --ui     -> játék mód (PySide)
     """
 
     if len(sys.argv) != 2:
         print("Használat:")
         print("  python main.py <mappa>    # teszt mód (in.txt a mappában)")
-        print("  python main.py --ui       # játék mód (PyGame)")
+        print("  python main.py --ui       # játék mód (PySide)")
+        print("  python main.py --tool     # basic mód (PySide)")
         sys.exit(1)
 
     arg = sys.argv[1]
 
     if arg == "--ui":
-        run_ui_mode()
+        run_game_mode()
+    elif arg == "--tool":
+        run_tool_mode()
     else:
         input_dir = arg
         if not os.path.isdir(input_dir):

@@ -193,9 +193,9 @@ def apply_reward_and_get_final_line(
         card_name = result.last_player_attacker_name
         card = player.collection[card_name]
 
-        if reward_type == "sebzes":
+        if reward_type == "sebzes" and card.damage <= 99:
             card.damage += 1
-        elif reward_type == "eletero":
+        elif reward_type == "eletero" and card.health <= 98:
             card.health += 2
         else:
             print(f"Ismeretlen jutalom típus: {reward_type}")
