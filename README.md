@@ -40,7 +40,7 @@ Játék módban futtatáshoz a programot a `--ui` paraméterrel indítjuk el.
 
 Példa parancs: `python main.py --ui`
 
-## Profi mód
+### Profi mód
 
 Profi módban futtatáshoz a programot a `--tool` paraméterrel indítjuk el.
 
