@@ -10,11 +10,11 @@ Vajon a gondosan kidolgozott stratégiád diadalt arat, vagy a kazamaták mélye
 
 ## Telepítés
 
-A játék futtatásához **PyGame**-re van szükség.
+A játék futtatásához **PySide6**-ra van szükség.
 
-Telepítsd a Python-t, majd a PyGame és pygame_gui csomagot.
+Telepítsd a Python-t, majd a PySide6 csomagot.
 
-`pip install pygame pygame_gui`
+`pip install PySide6`
 
 ## Használat
 
