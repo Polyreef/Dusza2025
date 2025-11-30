@@ -18,11 +18,13 @@ Telepítsd a Python-t, majd a PyGame és pygame_gui csomagot.
 
 ## Használat
 
-A programnak 2 különböző módja van:
+A programnak 3 különböző módja van:
 
 - **Teszt mód:** Ebben a módban a játék belső logikája kerül tesztelésre egy `in.txt` fájl alapján.
 
 - **Játék mód:** Ebben a módban lehet magát a játékot használni.
+
+- **Profi mód:** Ebben a módban lehet környezetet készíteni, valamint fejlesztői szemmel játszani.
 
 ### Teszt mód
 
@@ -37,6 +39,12 @@ A futás eredénye ugyanabba a mappába kerül kiíratásra a tesztesetben megha
 Játék módban futtatáshoz a programot a `--ui` paraméterrel indítjuk el.
 
 Példa parancs: `python main.py --ui`
+
+## Profi mód
+
+Profi módban futtatáshoz a programot a `--tool` paraméterrel indítjuk el.
+
+Példa parancs: `python main.py --tool`
 
 ---
 
