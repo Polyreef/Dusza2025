@@ -1,19 +1,12 @@
 import os
 import sys
 
-from run_game import run_game_mode
+from game.main_window import run_game_mode
 from run_test import run_test_mode
 from run_tool import run_tool_mode
 
 
 def main():
-    """
-    Belépési pont.
-
-    - <mappa>  -> teszt mód (in.txt a mappában)
-    - --ui     -> játék mód (PySide)
-    """
-
     if len(sys.argv) != 2:
         print("Használat:")
         print("  python main.py <mappa>    # teszt mód (in.txt a mappában)")

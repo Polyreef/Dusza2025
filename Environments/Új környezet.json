@@ -1,0 +1,101 @@
+{
+  "name": "Új környezet",
+  "world": {
+    "simple_cards": [
+      {
+        "name": "Bence",
+        "damage": 2,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      },
+      {
+        "name": "V",
+        "damage": 2,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      },
+      {
+        "name": "Jik",
+        "damage": 2,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      },
+      {
+        "name": "Ll",
+        "damage": 2,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      },
+      {
+        "name": "sss",
+        "damage": 2,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      }
+    ],
+    "leader_cards": [
+      {
+        "name": "jjj",
+        "damage": 4,
+        "health": 5,
+        "element": "levego",
+        "style": 1
+      }
+    ],
+    "dungeons": [
+      {
+        "name": "MMsd",
+        "kind": "egyszeru",
+        "simple_card_names": [
+          "Bence"
+        ],
+        "leader_name": null,
+        "reward_type": "sebzes",
+        "mystery": true
+      },
+      {
+        "name": "kii",
+        "kind": "kis",
+        "simple_card_names": [
+          "Bence",
+          "V",
+          "Jik"
+        ],
+        "leader_name": "jjj",
+        "reward_type": "eletero",
+        "mystery": true
+      }
+    ]
+  },
+  "starting_collection": [
+    {
+      "name": "Bence",
+      "damage": 2,
+      "health": 5,
+      "element": "levego"
+    },
+    {
+      "name": "V",
+      "damage": 2,
+      "health": 5,
+      "element": "levego"
+    },
+    {
+      "name": "Jik",
+      "damage": 2,
+      "health": 5,
+      "element": "levego"
+    },
+    {
+      "name": "Ll",
+      "damage": 2,
+      "health": 5,
+      "element": "levego"
+    }
+  ]
+}

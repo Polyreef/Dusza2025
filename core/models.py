@@ -107,6 +107,7 @@ class World:
         self.leader_cards = {}  # név -> CardDefinition
         self.leader_styles = {}  # név -> 1 - 2
         self.dungeons = {}  # név -> Dungeon
+        self.mystery_dungeons = {}  # név -> bool
         # dict-ek beillesztési sorrendje megmarad (jó exporthoz/mentéshez)
 
     # Kártyák hozzáadása
@@ -183,13 +184,16 @@ class World:
 
     # Kazamata kezelés
 
-    def add_dungeon(self, dungeon: Dungeon) -> Literal[True] | Literal[False]:
+    def add_dungeon(
+        self, dungeon: Dungeon, mystery: bool = False
+    ) -> Literal[True] | Literal[False]:
         dungeon.name = dungeon.name.strip()
         if dungeon.name in self.dungeons:
             print(f"Már létezik ilyen nevű kazamata: {dungeon.name}")
             return False
 
         self.dungeons[dungeon.name] = dungeon
+        self.mystery_dungeons[dungeon.name] = mystery
 
         return True
 

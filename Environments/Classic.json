@@ -104,7 +104,8 @@
                     "Nerun"
                 ],
                 "leader_name": null,
-                "reward_type": "sebzes"
+                "reward_type": "sebzes",
+                "mystery": false
             },
             {
                 "name": "Osi Szentely",
@@ -115,7 +116,8 @@
                     "Selia"
                 ],
                 "leader_name": "Lord Torak",
-                "reward_type": "eletero"
+                "reward_type": "eletero",
+                "mystery": false
             },
             {
                 "name": "A melyseg kiralynoje",
@@ -128,7 +130,8 @@
                     "Torak"
                 ],
                 "leader_name": "Priestess Selia",
-                "reward_type": null
+                "reward_type": null,
+                "mystery": false
             }
         ]
     },

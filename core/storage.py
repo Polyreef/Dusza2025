@@ -72,7 +72,10 @@ def world_to_dict(world: World) -> dict:
         for c in world.iter_leader_cards()
     ]
 
-    dungeons = [_dungeon_to_dict(d) for d in world.iter_dungeons()]
+    dungeons = [
+        {**_dungeon_to_dict(d), "mystery": world.mystery_dungeons[d.name]}
+        for d in world.iter_dungeons()
+    ]
     return {
         "simple_cards": simple_cards,
         "leader_cards": leader_cards,
@@ -100,6 +103,9 @@ def world_from_dict(data: dict) -> World:
     for d in data.get("dungeons", []):
         dungeon = _dungeon_from_dict(d)
         world.dungeons[dungeon.name] = dungeon
+
+        mystery = d.get("mystery", False)
+        world.mystery_dungeons[dungeon.name] = mystery
 
     return world
 

@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -28,7 +29,6 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
-    QToolBar,
     QVBoxLayout,
     QWidget,
 )
@@ -213,9 +213,9 @@ class GameMasterWidget(QWidget):
         )
         world_tabs.addTab(self.leader_table, "Vezérkártyák")
 
-        self.dungeon_table = QTableWidget(0, 5)
+        self.dungeon_table = QTableWidget(0, 6)
         self.dungeon_table.setHorizontalHeaderLabels(
-            ["Név", "Típus", "Sima lapok", "Vezér", "Jutalom"]
+            ["Név", "Típus", "Sima lapok", "Vezér", "Jutalom", "Mystery?"]
         )
         world_tabs.addTab(self.dungeon_table, "Kazamaták")
 
@@ -335,6 +335,10 @@ class GameMasterWidget(QWidget):
         form2 = QFormLayout()
         form2.addRow("Vezérkártya:", self.dun_leader_combo)
         form2.addRow("Jutalom típusa:", self.dun_reward_combo)
+
+        self.dun_mystery_checkbox = QCheckBox("Titokzatos kazamata (mystery)")
+        form2.addRow(self.dun_mystery_checkbox)
+
         layout.addLayout(form2)
 
         btn = QPushButton("Kazamata hozzáadása")
@@ -432,6 +436,10 @@ class GameMasterWidget(QWidget):
         )
         self.dungeon_table.setItem(row, 3, QTableWidgetItem(dungeon.leader_name or "-"))
         self.dungeon_table.setItem(row, 4, QTableWidgetItem(dungeon.reward_type or "-"))
+        mystery = getattr(self.world, "mystery_dungeons", {}).get(dungeon.name, False)
+        self.dungeon_table.setItem(
+            row, 5, QTableWidgetItem("Igen" if mystery else "Nem")
+        )
 
     def _update_status_label(self):
         name = self.environment.name if self.environment else self.env_name_edit.text()
@@ -568,6 +576,9 @@ class GameMasterWidget(QWidget):
                 self, "Hiba", "Nem sikerült hozzáadni a kazamatát (névütközés?)."
             )
             return
+
+        is_mystery = self.dun_mystery_checkbox.isChecked()
+        self.world.mystery_dungeons[name] = is_mystery
 
         self._append_dungeon_row(dungeon)
         self._update_status_label()
