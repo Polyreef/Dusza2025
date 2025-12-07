@@ -25,11 +25,6 @@ class WorldLibraryPage(BackgroundWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
 
-        self.header_label = QLabel("")
-        self.header_label.setStyleSheet("color: white; font-size: 14px;")
-        self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.header_label)
-
         layout.addStretch(1)
 
         center_layout = QVBoxLayout()
@@ -77,27 +72,13 @@ class WorldLibraryPage(BackgroundWidget):
 
         bottom_row.addStretch(1)
 
-        back_btn = ClickableImageButton(
-            "Assets/Images/Buttons/BackNormal.png",
-            "Assets/Images/Buttons/BackHover.png",
+        quit_btn = ClickableImageButton(
+            "Assets/Images/Buttons/QuitNormal.png",
+            "Assets/Images/Buttons/QuitHover.png",
             scale_factor=0.4,
         )
-        back_btn.set_on_click(self.game.show_main_menu)
-        bottom_row.addWidget(back_btn)
-
-    def refresh_from_game(self):
-        env = self.game.environment
-        state = self.game.state
-        if not (env and state):
-            self.header_label.setText(
-                "Nincs aktív játék. Indíts vagy tölts be egy kalandot."
-            )
-            return
-
-        world = env.world
-        self.header_label.setText(
-            f"Világ: {getattr(world, 'name', 'ismeretlen')} • Nehézség: {state.difficulty}"
-        )
+        quit_btn.set_on_click(self.game.show_main_menu)
+        bottom_row.addWidget(quit_btn)
 
 
 class WorldCardsPage(BackgroundWidget):
@@ -110,11 +91,6 @@ class WorldCardsPage(BackgroundWidget):
         layout = self.get_container()
         layout.setContentsMargins(20, 20, 20, 10)
         layout.setSpacing(10)
-
-        self.header_label = QLabel("Világkártyák")
-        self.header_label.setStyleSheet("color: white; font-size: 14px;")
-        self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.header_label)
 
         title_label = QLabel()
         title_pix = QPixmap("Assets/Images/Scrolls/WorldCards.png")
@@ -190,13 +166,9 @@ class WorldCardsPage(BackgroundWidget):
         self._clear_grid()
 
         if not (env and state):
-            self.header_label.setText("Nincs aktív játék.")
             return
 
         world = env.world
-        self.header_label.setText(
-            f"Világ: {getattr(world, 'name', 'ismeretlen')} • Nehézség: {state.difficulty}"
-        )
 
         world_cards = []
         if hasattr(world, "iter_simple_cards"):
@@ -227,20 +199,6 @@ class CollectionPage(BackgroundWidget):
         layout = self.get_container()
         layout.setContentsMargins(20, 20, 20, 10)
         layout.setSpacing(10)
-
-        self.header_label = QLabel("Gyűjteményed")
-        self.header_label.setStyleSheet("color: white; font-size: 14px;")
-        self.header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.header_label)
-
-        title_lbl = QLabel("Gyűjteményed")
-        title_font = QFont()
-        title_font.setPointSize(16)
-        title_font.setBold(True)
-        title_lbl.setFont(title_font)
-        title_lbl.setStyleSheet("color: white;")
-        title_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(title_lbl)
 
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
@@ -306,15 +264,10 @@ class CollectionPage(BackgroundWidget):
         self._clear_grid()
 
         if not (env and state):
-            self.header_label.setText("Nincs aktív játék.")
             return
 
         world = env.world
         player = state.player
-
-        self.header_label.setText(
-            f"Világ: {getattr(world, 'name', 'ismeretlen')} • Nehézség: {state.difficulty}"
-        )
 
         cards = list(player.collection.values())
         cols = 4

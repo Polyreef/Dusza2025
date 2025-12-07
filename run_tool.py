@@ -10,12 +10,11 @@ from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
-    QDialog,
-    QDialogButtonBox,
     QFileDialog,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QListWidget,
@@ -34,133 +33,17 @@ from PySide6.QtWidgets import (
 )
 
 from core import ELEMENT_ORDER
-from core.battle import run_battle, BattleResult
+from core.battle import run_battle
 from core.environment import Environment
-from core.models import World, Player, State, Dungeon, CardDefinition
+from core.models import World, State, Dungeon, CardDefinition
 from core import storage as storage_module
 
-
-def can_start_big_dungeon(world: World, player: Player) -> bool:
-    """
-    Nagy kazamata ellen csak akkor lehet harcolni, ha van még a világban olyan
-    sima kártya, ami nincs a játékos gyűjteményében.
-    """
-
-    for c in world.iter_simple_cards():
-        if c.name not in player.collection:
-            return True
-    return False
-
-
-def apply_battle_rewards(
-    world: World, state: State, dungeon: Dungeon, result: BattleResult
-) -> tuple[str, str]:
-    """
-    Harc utáni jutalom feldolgozása.
-
-    Visszatérés:
-        user_message, log_last_line
-    """
-
-    player = state.player
-
-    if result.outcome != "win":
-        return ("A játékos vesztett - nincs jutalom.", "jatekos vesztett")
-
-    # Egyszerű és kis kazamata: utolsó támadó lap sebzés / életerő bónuszt kap
-    if dungeon.kind in ("egyszeru", "kis"):
-        reward_type = dungeon.reward_type or "eletero"
-        card_name = result.last_player_attacker_name
-        if not card_name:
-            return (
-                "A játékos nyert, de az utolsó támadó lap nem ismert.",
-                "jatekos nyert",
-            )
-
-        card = player.collection.get(card_name)
-        if not card:
-            return (
-                f"A játékos nyert, de a(z) {card_name} lap nem található a gyűjteményben.",
-                "jatekos nyert",
-            )
-
-        if reward_type == "sebzes":
-            card.damage += 1
-            msg = f"A játékos nyert; {card.name} +1 sebzést kapott."
-            last_line = f"jatekos nyert;sebzes;{card.name}"
-        else:
-            # alapértelmezésként életerő
-            card.health += 2
-            msg = f"A játékos nyert; {card.name} +2 életerőt kapott."
-            last_line = f"jatekos nyert;eletero;{card.name}"
-
-        return msg, last_line
-
-    # Nagy kazamata: első olyan sima világlap, ami még nincs a gyűjteményben
-    if dungeon.kind == "nagy":
-        for c in world.iter_simple_cards():
-            if c.name not in player.collection:
-                player.add_card_from_world(world, c.name)
-                msg = f"A játékos nyert; új kártyát kapott: {c.name}."
-                last_line = f"jatekos nyert;{c.name}"
-                return msg, last_line
-
-        # Elvileg nagy kazamata elé nem is engedjük a játékost ilyen esetben,
-        # de legyünk hibatűrők.
-        return (
-            "A játékos nyert, de már nincs a világban új sima kártya jutalomként.",
-            "jatekos nyert",
-        )
-
-    # Ismeretlen típus - ne omoljon össze az alkalmazás
-    return ("A játékos nyert, de ismeretlen kazamata típus.", "jatekos nyert")
-
-
-def ask_difficulty(parent: QWidget) -> Optional[int]:
-    dlg = QDialog(parent)
-    dlg.setWindowTitle("Nehézségi szint")
-    layout = QVBoxLayout(dlg)
-
-    form = QFormLayout()
-    sb = QSpinBox()
-    sb.setRange(0, 10)
-    sb.setValue(0)
-    form.addRow("Nehézségi szint (0-10):", sb)
-    layout.addLayout(form)
-
-    buttons = QDialogButtonBox(
-        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-    )
-    layout.addWidget(buttons)
-
-    def on_accept():
-        dlg.accept()
-
-    def on_reject():
-        dlg.reject()
-
-    buttons.accepted.connect(on_accept)
-    buttons.rejected.connect(on_reject)
-
-    if dlg.exec() == QDialog.DialogCode.Accepted:
-        return int(sb.value())
-    return None
-
-
-def show_error(parent: QWidget, title: str, text: str):
-    mb = QMessageBox(parent)
-    mb.setIcon(QMessageBox.Icon.Critical)
-    mb.setWindowTitle(title)
-    mb.setText(text)
-    mb.exec()
-
-
-def show_info(parent: QWidget, title: str, text: str):
-    mb = QMessageBox(parent)
-    mb.setIcon(QMessageBox.Icon.Information)
-    mb.setWindowTitle(title)
-    mb.setText(text)
-    mb.exec()
+from game.helpers import (
+    apply_battle_rewards,
+    can_start_big_dungeon,
+    show_error,
+    show_info,
+)
 
 
 class GameMasterWidget(QWidget):
@@ -923,11 +806,18 @@ class PlayerWidget(QWidget):
             )
             return
 
-        difficulty = ask_difficulty(self)
-        if difficulty is None:
+        diff, ok = QInputDialog.getInt(
+            self,
+            "Nehézség",
+            "Válassz nehézséget (0-10):",
+            value=0,
+            minValue=0,
+            maxValue=10,
+        )
+        if not ok:
             return
 
-        self.state = self.environment.new_game(difficulty)
+        self.state = self.environment.new_game(diff)
         self.battle_log_edit.clear()
         self._rebuild_collection_and_deck_views()
         self._update_buttons_enabled()
@@ -1145,8 +1035,7 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 self,
                 "Damareen - Névjegy",
-                "Damareen - Lords of the Strings - 2025\n"
-                "PySide6 alapú felhasználói felület.\n\n",
+                "Damareen - Lords of the Strings - 2025\n",
             )
 
         about_action.triggered.connect(on_about)

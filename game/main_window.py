@@ -156,7 +156,6 @@ class DamareenGameWindow(QMainWindow):
         if not (self.environment and self.state):
             show_error(self, "Hiba", "Előbb indíts vagy tölts be egy játékot.")
             return
-        self.library_page.refresh_from_game()
         self.stack.setCurrentWidget(self.library_page)
 
     def show_deck_page(self):
@@ -227,20 +226,11 @@ class DamareenGameWindow(QMainWindow):
         self.start_new_game(chosen_env, diff)
 
     def start_new_game(self, environment: Environment, difficulty: int):
-        if self.environment and self.state:
-            if not ask_yes_no(
-                self,
-                "Új játék",
-                "Ha új játékot indítasz, a jelenlegi kaland mentés nélkül elveszik.\n"
-                "Biztosan folytatod?",
-            ):
-                return
         self.environment = environment
         self.state = environment.new_game(difficulty)
 
         self.deck_page.refresh_from_state()
 
-        self.library_page.refresh_from_game()
         self.show_library_page()
 
     def menu_load_game(self):
@@ -280,7 +270,6 @@ class DamareenGameWindow(QMainWindow):
         self.state = state
 
         self.deck_page.refresh_from_state()
-        self.library_page.refresh_from_game()
 
         self.show_library_page()
         show_info(self, "Betöltve", "A játékállapot sikeresen betöltve.")
