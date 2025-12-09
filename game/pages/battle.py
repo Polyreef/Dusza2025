@@ -32,11 +32,11 @@ class BattleAnimationPage(BackgroundWidget):
         else:
             family = "Times New Roman"
         
-        self.status_font = QFont(family, 20)
+        self.status_font = QFont(family, 26)
 
-        self.status_label = QLabel("1. kör")
+        self.status_label = QLabel("Felkészülni...")
         self.status_label.setFont(self.status_font)
-        self.status_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
+        self.status_label.setStyleSheet("color: white; font-weight: bold;")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self._build_ui()
@@ -199,7 +199,7 @@ class BattleAnimationPage(BackgroundWidget):
         actor = parts[1]
         action = parts[2]
 
-        round_str = round.split(".")[0]
+        self.status_label.setText(round.replace("o", "ö").replace(".", ". "))
 
         if action == "kijatszik":
             if len(parts) < 6:
@@ -214,14 +214,10 @@ class BattleAnimationPage(BackgroundWidget):
                 return
 
             if actor == "jatekos":
-                self.status_label.setText(f"{round_str}. kör: {name} (játékos) kijátszik")
-
                 self.player_current = name
                 self.player_hp = hp
                 self.load_character_sprite(self.player_label, name)
             else:
-                self.status_label.setText(f"{round_str}. kör: {name} (kazamata) kijátszik")
-
                 self.enemy_current = name
                 self.enemy_hp = hp
                 self.load_character_sprite(self.enemy_label, name)
@@ -233,10 +229,8 @@ class BattleAnimationPage(BackgroundWidget):
         if action == "tamad":
             dmg = int(parts[4])
             if actor == "kazamata":
-                self.status_label.setText(f"{round_str}. kör: kazamata támad")
                 attacker = "enemy"
             else:
-                self.status_label.setText(f"{round_str}. kör: játékos támad")
                 attacker = "player"
             self.animate_attack(attacker, dmg)
             return
