@@ -1001,8 +1001,10 @@ class PlayerWidget(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, working_dir: str):
         super().__init__()
+
+        self.working_dir = working_dir
 
         self.setWindowTitle("Damareen - Professzionális mód")
 
@@ -1041,8 +1043,8 @@ class MainWindow(QMainWindow):
         about_action.triggered.connect(on_about)
 
 
-def run_tool_mode():
+def run_tool_mode(working_dir: str):
     app = QApplication([])
-    window = MainWindow()
+    window = MainWindow(working_dir)
     window.show()
     app.exec()

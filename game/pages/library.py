@@ -16,13 +16,13 @@ from game.widgets.cards import CardWidget
 
 class WorldLibraryPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__("Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
         self.game = game
         self._build_ui()
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
 
         layout.addStretch(1)
@@ -33,22 +33,22 @@ class WorldLibraryPage(BackgroundWidget):
         layout.addLayout(center_layout, stretch=0)
 
         cards_view_btn = ClickableImageButton(
-            "Assets/Images/Buttons/CardsNormal.png",
-            "Assets/Images/Buttons/CardsHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/CardsNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/CardsHover.png",
         )
         cards_view_btn.set_on_click(self.game.show_world_cards_page)
         center_layout.addWidget(cards_view_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         dungeons_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DungeonsNormal.png",
-            "Assets/Images/Buttons/DungeonsHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsHover.png",
         )
         dungeons_btn.set_on_click(self.game.show_map_page)
         center_layout.addWidget(dungeons_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         collection_btn = ClickableImageButton(
-            "Assets/Images/Buttons/CollectionNormal.png",
-            "Assets/Images/Buttons/CollectionHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/CollectionNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/CollectionHover.png",
         )
         collection_btn.set_on_click(self.game.show_collection_page)
         center_layout.addWidget(collection_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -60,8 +60,8 @@ class WorldLibraryPage(BackgroundWidget):
         layout.addLayout(bottom_row)
 
         deck_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DeckNormal.png",
-            "Assets/Images/Buttons/DeckHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         bottom_row.addWidget(deck_btn)
@@ -69,8 +69,8 @@ class WorldLibraryPage(BackgroundWidget):
         bottom_row.addStretch(1)
 
         quit_btn = ClickableImageButton(
-            "Assets/Images/Buttons/QuitNormal.png",
-            "Assets/Images/Buttons/QuitHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/QuitNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/QuitHover.png",
         )
         quit_btn.set_on_click(self.game.show_main_menu)
         bottom_row.addWidget(quit_btn)
@@ -78,17 +78,17 @@ class WorldLibraryPage(BackgroundWidget):
 
 class WorldCardsPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__("Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
         self.game = game
         self._build_ui()
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
 
         title_label = QLabel()
-        title_pix = QPixmap("Assets/Images/Scrolls/WorldCards.png")
+        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/WorldCards.png")
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
                 320, Qt.TransformationMode.SmoothTransformation
@@ -123,8 +123,8 @@ class WorldCardsPage(BackgroundWidget):
         layout.addLayout(btn_row)
 
         back_lib_btn = ClickableImageButton(
-            "Assets/Images/Buttons/BackNormal.png",
-            "Assets/Images/Buttons/BackHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackHover.png",
         )
         back_lib_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(back_lib_btn)
@@ -132,15 +132,15 @@ class WorldCardsPage(BackgroundWidget):
         btn_row.addStretch(1)
 
         deck_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DeckNormal.png",
-            "Assets/Images/Buttons/DeckHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(deck_btn)
 
         map_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DungeonsNormal.png",
-            "Assets/Images/Buttons/DungeonsHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsHover.png",
         )
         map_btn.set_on_click(self.game.show_map_page)
         btn_row.addWidget(map_btn)
@@ -171,7 +171,7 @@ class WorldCardsPage(BackgroundWidget):
         cols = 4
         row = col = 0
         for c in world_cards:
-            w = CardWidget(c, world)
+            w = CardWidget(c, world, self.game.working_dir)
             self.grid_layout.addWidget(w, row, col)
             col += 1
             if col >= cols:
@@ -183,13 +183,13 @@ class WorldCardsPage(BackgroundWidget):
 
 class CollectionPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__("Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
         self.game = game
         self._build_ui()
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
 
         self.scroll = QScrollArea()
@@ -218,8 +218,8 @@ class CollectionPage(BackgroundWidget):
         layout.addLayout(btn_row)
 
         back_lib_btn = ClickableImageButton(
-            "Assets/Images/Buttons/BackNormal.png",
-            "Assets/Images/Buttons/BackHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackHover.png",
         )
         back_lib_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(back_lib_btn)
@@ -227,15 +227,15 @@ class CollectionPage(BackgroundWidget):
         btn_row.addStretch(1)
 
         deck_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DeckNormal.png",
-            "Assets/Images/Buttons/DeckHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(deck_btn)
 
         map_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DungeonsNormal.png",
-            "Assets/Images/Buttons/DungeonsHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DungeonsHover.png",
         )
         map_btn.set_on_click(self.game.show_map_page)
         btn_row.addWidget(map_btn)
@@ -262,7 +262,7 @@ class CollectionPage(BackgroundWidget):
         cols = 4
         row = col = 0
         for c in cards:
-            w = CardWidget(c, world)
+            w = CardWidget(c, world, self.game.working_dir)
             self.grid_layout.addWidget(w, row, col)
             col += 1
             if col >= cols:

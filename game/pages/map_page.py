@@ -56,7 +56,7 @@ class DungeonListItem(QFrame):
         )
 
         main = QVBoxLayout(self)
-        main.setContentsMargins(10, 10, 10, 10)
+        main.setContentsMargins(20, 20, 20, 20)
         main.setSpacing(10)
 
         top = QHBoxLayout()
@@ -64,9 +64,9 @@ class DungeonListItem(QFrame):
         main.addLayout(top)
 
         kind_to_bg = {
-            "egyszeru": "Assets/Images/Backgrounds/egyszeru.png",
-            "kis": "Assets/Images/Backgrounds/kis.png",
-            "nagy": "Assets/Images/Backgrounds/nagy.png",
+            "egyszeru": self.game.working_dir + "Assets/Images/Backgrounds/egyszeru.png",
+            "kis": self.game.working_dir + "Assets/Images/Backgrounds/kis.png",
+            "nagy": self.game.working_dir + "Assets/Images/Backgrounds/nagy.png",
         }
 
         img = QLabel()
@@ -129,7 +129,7 @@ class DungeonListItem(QFrame):
             cols = 2
 
             if is_mystery:
-                mystery_pix = QPixmap("Assets/Images/Misc/Mystery.png")
+                mystery_pix = QPixmap(self.game.working_dir + "Assets/Images/Misc/Mystery.png")
                 for i, _card_def in enumerate(seq):
                     lbl = QLabel()
                     if not mystery_pix.isNull():
@@ -146,7 +146,7 @@ class DungeonListItem(QFrame):
                     grid.addWidget(lbl, row, col)
             else:
                 for i, card_def in enumerate(seq):
-                    cw = CardWidget(card_def, world)
+                    cw = CardWidget(card_def, world, self.game.working_dir)
                     row = i // cols
                     col = i % cols
                     grid.addWidget(cw, row, col)
@@ -158,8 +158,8 @@ class DungeonListItem(QFrame):
             btn_layout.addStretch(1)
 
             battle = ClickableImageButton(
-                "Assets/Images/Buttons/BattleNormal.png",
-                "Assets/Images/Buttons/BattleHover.png",
+                self.game.working_dir + "Assets/Images/Buttons/BattleNormal.png",
+                self.game.working_dir + "Assets/Images/Buttons/BattleHover.png",
             )
             battle.set_on_click(
                 lambda: self.game.start_battle_by_name(self.dungeon.name)
@@ -175,17 +175,17 @@ class DungeonListItem(QFrame):
 
 class MapPage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__("Assets/Images/Backgrounds/Game.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Game.png", game)
         self.game = game
         self._build_ui()
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
 
         self.title_label = QLabel()
-        title_pix = QPixmap("Assets/Images/Scrolls/Dungeons.png")
+        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/Dungeons.png")
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
                 420, Qt.TransformationMode.SmoothTransformation
@@ -219,22 +219,22 @@ class MapPage(BackgroundWidget):
         layout.addLayout(btn_row)
 
         self.to_deck_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DeckNormal.png",
-            "Assets/Images/Buttons/DeckHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
         )
         self.to_deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(self.to_deck_btn)
 
         self.save_btn = ClickableImageButton(
-            "Assets/Images/Buttons/SaveNormal.png",
-            "Assets/Images/Buttons/SaveHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/SaveNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/SaveHover.png",
         )
         self.save_btn.set_on_click(self.game.save_game_dialog)
         btn_row.addWidget(self.save_btn)
 
         self.auto_btn = ClickableImageButton(
-            "Assets/Images/Buttons/AutoNormal.png",
-            "Assets/Images/Buttons/AutoHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/AutoNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/AutoHover.png",
         )
         self.auto_btn.set_on_click(self.generate_auto_dungeon)
         btn_row.addWidget(self.auto_btn)
@@ -242,8 +242,8 @@ class MapPage(BackgroundWidget):
         btn_row.addStretch(1)
 
         self.back_menu_btn = ClickableImageButton(
-            "Assets/Images/Buttons/BackNormal.png",
-            "Assets/Images/Buttons/BackHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackHover.png",
         )
         self.back_menu_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(self.back_menu_btn)

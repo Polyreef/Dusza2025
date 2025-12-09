@@ -7,7 +7,7 @@ from game.widgets.buttons import ClickableImageButton
 
 class MainMenuPage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__("Assets/Images/Backgrounds/Menu.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Menu.png", game)
         self.game = game
         self._build_ui()
 
@@ -20,29 +20,29 @@ class MainMenuPage(BackgroundWidget):
         button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         new_btn = ClickableImageButton(
-            "Assets/Images/Buttons/NewGameNormal.png",
-            "Assets/Images/Buttons/NewGameHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/NewGameNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/NewGameHover.png",
         )
         new_btn.set_on_click(self.game.start_new_game_dialog)
         button_layout.addWidget(new_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         load_btn = ClickableImageButton(
-            "Assets/Images/Buttons/LoadNormal.png",
-            "Assets/Images/Buttons/LoadHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/LoadNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/LoadHover.png",
         )
         load_btn.set_on_click(self.game.menu_load_game)
         button_layout.addWidget(load_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         creator_btn = ClickableImageButton(
-            "Assets/Images/Buttons/CreatorNormal.png",
-            "Assets/Images/Buttons/CreatorHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/CreatorNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/CreatorHover.png",
         )
         creator_btn.set_on_click(self.game.open_creator_tool)
         button_layout.addWidget(creator_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
         quit_btn = ClickableImageButton(
-            "Assets/Images/Buttons/QuitNormal.png",
-            "Assets/Images/Buttons/QuitHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/QuitNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/QuitHover.png",
         )
         quit_btn.set_on_click(self.game.close)
         button_layout.addWidget(quit_btn, alignment=Qt.AlignmentFlag.AlignCenter)

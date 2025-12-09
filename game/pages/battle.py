@@ -1,5 +1,5 @@
 from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QFont, QFontDatabase
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from game.widgets.background import BackgroundWidget
@@ -7,7 +7,7 @@ from game.widgets.background import BackgroundWidget
 
 class BattleAnimationPage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__("Assets/Images/Backgrounds/egyszeru.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/egyszeru.png", game)
         self.game = game
 
         self.log = []
@@ -26,6 +26,19 @@ class BattleAnimationPage(BackgroundWidget):
 
         self._current_attack_anim = None
 
+        font_id = QFontDatabase.addApplicationFont(self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf")
+        if font_id != -1:
+            family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        else:
+            family = "Times New Roman"
+        
+        self.status_font = QFont(family, 20)
+
+        self.status_label = QLabel("1. kör")
+        self.status_label.setFont(self.status_font)
+        self.status_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         self._build_ui()
 
     def get_any_card_from_world(self, world, name):
@@ -41,11 +54,7 @@ class BattleAnimationPage(BackgroundWidget):
         layout = self.get_container()
         layout.setContentsMargins(20, 20, 20, 20)
 
-        title = QLabel("Harc kezdődik…")
-        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.title_label = title
-        layout.addWidget(title)
+        layout.addWidget(self.status_label)
 
         field = QWidget()
         f = QHBoxLayout(field)
@@ -87,9 +96,9 @@ class BattleAnimationPage(BackgroundWidget):
         self.reward_msg = reward_msg
 
         bg = {
-            "egyszeru": "Assets/Images/Backgrounds/egyszeru.png",
-            "kis": "Assets/Images/Backgrounds/kis.png",
-            "nagy": "Assets/Images/Backgrounds/nagy.png",
+            "egyszeru": self.game.working_dir + "Assets/Images/Backgrounds/egyszeru.png",
+            "kis": self.game.working_dir + "Assets/Images/Backgrounds/kis.png",
+            "nagy": self.game.working_dir + "Assets/Images/Backgrounds/nagy.png",
         }.get(dungeon.kind, "Assets/Images/Backgrounds/egyszeru.png")
         self.set_background(bg)
 
@@ -141,16 +150,16 @@ class BattleAnimationPage(BackgroundWidget):
         card = self.get_any_card_from_world(world, card_name)
 
         if not card:
-            pix = QPixmap("Assets/Images/Characters/Fold1.png")
+            pix = QPixmap(self.game.working_dir + "Assets/Images/Characters/Fold1.png")
         else:
             elem = card.element.capitalize()
             style = world.simple_styles.get(card.name) or world.leader_styles.get(
                 card.name, 1
             )
-            path = f"Assets/Images/Characters/{elem}{style}.png"
+            path = self.game.working_dir + f"Assets/Images/Characters/{elem}{style}.png"
             pix = QPixmap(path)
             if pix.isNull():
-                pix = QPixmap("Assets/Images/Characters/Fold1.png")
+                pix = QPixmap(self.game.working_dir + "Assets/Images/Characters/Fold1.png")
 
         label.setPixmap(
             pix.scaled(
@@ -186,8 +195,11 @@ class BattleAnimationPage(BackgroundWidget):
             QTimer.singleShot(10, self.next_step)
             return
 
+        round = parts[0]
         actor = parts[1]
         action = parts[2]
+
+        round_str = round.split(".")[0]
 
         if action == "kijatszik":
             if len(parts) < 6:
@@ -202,10 +214,14 @@ class BattleAnimationPage(BackgroundWidget):
                 return
 
             if actor == "jatekos":
+                self.status_label.setText(f"{round_str}. kör: {name} (játékos) kijátszik")
+
                 self.player_current = name
                 self.player_hp = hp
                 self.load_character_sprite(self.player_label, name)
             else:
+                self.status_label.setText(f"{round_str}. kör: {name} (kazamata) kijátszik")
+
                 self.enemy_current = name
                 self.enemy_hp = hp
                 self.load_character_sprite(self.enemy_label, name)
@@ -216,7 +232,12 @@ class BattleAnimationPage(BackgroundWidget):
 
         if action == "tamad":
             dmg = int(parts[4])
-            attacker = "enemy" if actor == "kazamata" else "player"
+            if actor == "kazamata":
+                self.status_label.setText(f"{round_str}. kör: kazamata támad")
+                attacker = "enemy"
+            else:
+                self.status_label.setText(f"{round_str}. kör: játékos támad")
+                attacker = "player"
             self.animate_attack(attacker, dmg)
             return
 

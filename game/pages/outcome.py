@@ -30,7 +30,7 @@ class FadeOverlay(QWidget):
 
 class VictoryLosePage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__("Assets/Images/Backgrounds/Victory.png", game)
+        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Victory.png", game)
         self.game = game
 
         self.overlay = FadeOverlay(self)
@@ -58,8 +58,8 @@ class VictoryLosePage(BackgroundWidget):
         self.vbox.addWidget(self.text_label)
 
         self.done_btn = ClickableImageButton(
-            "Assets/Images/Buttons/DoneNormal.png",
-            "Assets/Images/Buttons/DoneHover.png",
+            self.game.working_dir + "Assets/Images/Buttons/DoneNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DoneHover.png",
             
         )
         self.done_btn.set_on_click(lambda: self.game.show_deck_page())
@@ -73,15 +73,15 @@ class VictoryLosePage(BackgroundWidget):
         window = self.window()
 
         if outcome == "win":
-            self.set_background("Assets/Images/Backgrounds/Victory.png")
-            scroll_path = "Assets/Images/Scrolls/Victory.png"
+            self.set_background(self.game.working_dir + "Assets/Images/Backgrounds/Victory.png")
+            scroll_path = self.game.working_dir + "Assets/Images/Scrolls/Victory.png"
             main_text = "Győzelem!"
 
             if hasattr(window, "sound"):
                 window.sound.play("trumpets")
         else:
-            self.set_background("Assets/Images/Backgrounds/Lose.png")
-            scroll_path = "Assets/Images/Scrolls/Lose.png"
+            self.set_background(self.game.working_dir + "Assets/Images/Backgrounds/Lose.png")
+            scroll_path = self.game.working_dir + "Assets/Images/Scrolls/Lose.png"
             main_text = "Vereség…"
 
             if hasattr(window, "sound"):

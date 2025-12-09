@@ -45,8 +45,10 @@ from game.pages.dialogs import (
 
 
 class DamareenGameWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, working_dir: str):
         super().__init__()
+
+        self.working_dir = working_dir
 
         self.environment: Optional[Environment] = None
         self.state: Optional[State] = None
@@ -106,7 +108,7 @@ class DamareenGameWindow(QMainWindow):
         }
 
         for name, (path, volume, loop) in SOUNDS.items():
-            self.sound.load(name, path, volume, loop)
+            self.sound.load(name, self.working_dir + path, volume, loop)
 
     def _build_menu_bar(self):
         menubar = self.menuBar()
@@ -148,7 +150,7 @@ class DamareenGameWindow(QMainWindow):
     def open_creator_tool(self):
         from run_tool import MainWindow as ToolMainWindow
 
-        self.tool_window = ToolMainWindow()
+        self.tool_window = ToolMainWindow(self.working_dir)
         self.tool_window.show()
 
     def show_library_page(self):
@@ -192,7 +194,7 @@ class DamareenGameWindow(QMainWindow):
         self.victory_lose_page.show_result(outcome, reward_msg)
 
     def start_new_game_dialog(self):
-        env_dir = "Environments"
+        env_dir = self.working_dir + "Environments"
         env_files = []
 
         if os.path.isdir(env_dir):
@@ -233,7 +235,7 @@ class DamareenGameWindow(QMainWindow):
         self.show_library_page()
 
     def menu_load_game(self):
-        state_dir = "States"
+        state_dir = self.working_dir + "States"
         state_files = []
 
         if os.path.isdir(state_dir):
@@ -357,8 +359,8 @@ class DamareenGameWindow(QMainWindow):
         self.show_battle_animation_page()
 
 
-def run_game_mode():
+def run_game_mode(working_dir: str):
     app = QApplication([])
-    window = DamareenGameWindow()
+    window = DamareenGameWindow(working_dir)
     window.show()
     app.exec()

@@ -29,7 +29,7 @@ class CardWidget(QFrame):
         "Viz": "#7bd5f2",
     }
 
-    def __init__(self, card, world, parent=None):
+    def __init__(self, card, world, working_dir, parent=None):
         super().__init__(parent)
 
         self.card = card
@@ -42,7 +42,7 @@ class CardWidget(QFrame):
             style_id = 1
 
         element = card.element.capitalize()
-        img_path = f"Assets/Images/Cards/{element}{style_id}.png"
+        img_path = working_dir + f"Assets/Images/Cards/{element}{style_id}.png"
         self.pixmap = QPixmap(img_path)
 
         self.border_color = self.BORDER_COLORS.get(element, "#888888")
@@ -52,7 +52,7 @@ class CardWidget(QFrame):
         self.setObjectName("CardWidgetFrame")
         self._apply_style(hover=False)
 
-        font_id = QFontDatabase.addApplicationFont("Assets/Font/AlmendraSC-Regular.ttf")
+        font_id = QFontDatabase.addApplicationFont(working_dir + "Assets/Font/AlmendraSC-Regular.ttf")
         if font_id != -1:
             family = QFontDatabase.applicationFontFamilies(font_id)[0]
         else:

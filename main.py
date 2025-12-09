@@ -7,19 +7,22 @@ from run_tool import run_tool_mode
 
 
 def main():
+    working_dir = os.path.dirname(os.path.abspath(__file__)) + "/"
+
     if len(sys.argv) != 2:
         print("Használat:")
         print("  python main.py <mappa>    # teszt mód (in.txt a mappában)")
         print("  python main.py --ui       # játék mód (PySide)")
         print("  python main.py --tool     # basic mód (PySide)")
-        sys.exit(1)
+        run_game_mode(working_dir)
+        return
 
     arg = sys.argv[1]
 
     if arg == "--ui":
-        run_game_mode()
+        run_game_mode(working_dir)
     elif arg == "--tool":
-        run_tool_mode()
+        run_tool_mode(working_dir)
     else:
         input_dir = arg
         if not os.path.isdir(input_dir):
