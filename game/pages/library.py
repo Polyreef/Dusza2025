@@ -22,7 +22,7 @@ class WorldLibraryPage(BackgroundWidget):
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(20)
 
         layout.addStretch(1)
@@ -35,7 +35,6 @@ class WorldLibraryPage(BackgroundWidget):
         cards_view_btn = ClickableImageButton(
             "Assets/Images/Buttons/CardsNormal.png",
             "Assets/Images/Buttons/CardsHover.png",
-            scale_factor=0.5,
         )
         cards_view_btn.set_on_click(self.game.show_world_cards_page)
         center_layout.addWidget(cards_view_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -43,7 +42,6 @@ class WorldLibraryPage(BackgroundWidget):
         dungeons_btn = ClickableImageButton(
             "Assets/Images/Buttons/DungeonsNormal.png",
             "Assets/Images/Buttons/DungeonsHover.png",
-            scale_factor=0.5,
         )
         dungeons_btn.set_on_click(self.game.show_map_page)
         center_layout.addWidget(dungeons_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -51,7 +49,6 @@ class WorldLibraryPage(BackgroundWidget):
         collection_btn = ClickableImageButton(
             "Assets/Images/Buttons/CollectionNormal.png",
             "Assets/Images/Buttons/CollectionHover.png",
-            scale_factor=0.5,
         )
         collection_btn.set_on_click(self.game.show_collection_page)
         center_layout.addWidget(collection_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -65,7 +62,6 @@ class WorldLibraryPage(BackgroundWidget):
         deck_btn = ClickableImageButton(
             "Assets/Images/Buttons/DeckNormal.png",
             "Assets/Images/Buttons/DeckHover.png",
-            scale_factor=0.4,
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         bottom_row.addWidget(deck_btn)
@@ -75,7 +71,6 @@ class WorldLibraryPage(BackgroundWidget):
         quit_btn = ClickableImageButton(
             "Assets/Images/Buttons/QuitNormal.png",
             "Assets/Images/Buttons/QuitHover.png",
-            scale_factor=0.4,
         )
         quit_btn.set_on_click(self.game.show_main_menu)
         bottom_row.addWidget(quit_btn)
@@ -89,7 +84,7 @@ class WorldCardsPage(BackgroundWidget):
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(20, 20, 20, 10)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
         title_label = QLabel()
@@ -130,7 +125,6 @@ class WorldCardsPage(BackgroundWidget):
         back_lib_btn = ClickableImageButton(
             "Assets/Images/Buttons/BackNormal.png",
             "Assets/Images/Buttons/BackHover.png",
-            scale_factor=0.35,
         )
         back_lib_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(back_lib_btn)
@@ -140,7 +134,6 @@ class WorldCardsPage(BackgroundWidget):
         deck_btn = ClickableImageButton(
             "Assets/Images/Buttons/DeckNormal.png",
             "Assets/Images/Buttons/DeckHover.png",
-            scale_factor=0.35,
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(deck_btn)
@@ -148,7 +141,6 @@ class WorldCardsPage(BackgroundWidget):
         map_btn = ClickableImageButton(
             "Assets/Images/Buttons/DungeonsNormal.png",
             "Assets/Images/Buttons/DungeonsHover.png",
-            scale_factor=0.35,
         )
         map_btn.set_on_click(self.game.show_map_page)
         btn_row.addWidget(map_btn)
@@ -197,7 +189,7 @@ class CollectionPage(BackgroundWidget):
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(20, 20, 20, 10)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
         self.scroll = QScrollArea()
@@ -228,7 +220,6 @@ class CollectionPage(BackgroundWidget):
         back_lib_btn = ClickableImageButton(
             "Assets/Images/Buttons/BackNormal.png",
             "Assets/Images/Buttons/BackHover.png",
-            scale_factor=0.35,
         )
         back_lib_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(back_lib_btn)
@@ -238,7 +229,6 @@ class CollectionPage(BackgroundWidget):
         deck_btn = ClickableImageButton(
             "Assets/Images/Buttons/DeckNormal.png",
             "Assets/Images/Buttons/DeckHover.png",
-            scale_factor=0.35,
         )
         deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(deck_btn)
@@ -246,7 +236,6 @@ class CollectionPage(BackgroundWidget):
         map_btn = ClickableImageButton(
             "Assets/Images/Buttons/DungeonsNormal.png",
             "Assets/Images/Buttons/DungeonsHover.png",
-            scale_factor=0.35,
         )
         map_btn.set_on_click(self.game.show_map_page)
         btn_row.addWidget(map_btn)

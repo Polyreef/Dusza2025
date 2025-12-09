@@ -60,7 +60,7 @@ class VictoryLosePage(BackgroundWidget):
         self.done_btn = ClickableImageButton(
             "Assets/Images/Buttons/DoneNormal.png",
             "Assets/Images/Buttons/DoneHover.png",
-            scale_factor=0.6,
+            
         )
         self.done_btn.set_on_click(lambda: self.game.show_deck_page())
         self.vbox.addWidget(self.done_btn, alignment=Qt.AlignmentFlag.AlignCenter)

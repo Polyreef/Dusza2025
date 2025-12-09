@@ -28,7 +28,6 @@ from core.storage import (
 from game.sound import SoundManager
 from game.helpers import (
     apply_battle_rewards,
-    ask_yes_no,
     can_start_big_dungeon,
     show_error,
     show_info,

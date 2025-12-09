@@ -22,7 +22,6 @@ class MainMenuPage(BackgroundWidget):
         new_btn = ClickableImageButton(
             "Assets/Images/Buttons/NewGameNormal.png",
             "Assets/Images/Buttons/NewGameHover.png",
-            scale_factor=0.60,
         )
         new_btn.set_on_click(self.game.start_new_game_dialog)
         button_layout.addWidget(new_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -30,7 +29,6 @@ class MainMenuPage(BackgroundWidget):
         load_btn = ClickableImageButton(
             "Assets/Images/Buttons/LoadNormal.png",
             "Assets/Images/Buttons/LoadHover.png",
-            scale_factor=0.60,
         )
         load_btn.set_on_click(self.game.menu_load_game)
         button_layout.addWidget(load_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -38,7 +36,6 @@ class MainMenuPage(BackgroundWidget):
         creator_btn = ClickableImageButton(
             "Assets/Images/Buttons/CreatorNormal.png",
             "Assets/Images/Buttons/CreatorHover.png",
-            scale_factor=0.60,
         )
         creator_btn.set_on_click(self.game.open_creator_tool)
         button_layout.addWidget(creator_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -46,7 +43,6 @@ class MainMenuPage(BackgroundWidget):
         quit_btn = ClickableImageButton(
             "Assets/Images/Buttons/QuitNormal.png",
             "Assets/Images/Buttons/QuitHover.png",
-            scale_factor=0.60,
         )
         quit_btn.set_on_click(self.game.close)
         button_layout.addWidget(quit_btn, alignment=Qt.AlignmentFlag.AlignCenter)

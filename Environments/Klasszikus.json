@@ -1,5 +1,5 @@
 {
-    "name": "Classic",
+    "name": "Klasszikus",
     "world": {
         "simple_cards": [
             {
@@ -108,7 +108,7 @@
                 "mystery": false
             },
             {
-                "name": "Osi Szentely",
+                "name": "Ősi Szentély",
                 "kind": "kis",
                 "simple_card_names": [
                     "Arin",
@@ -120,7 +120,7 @@
                 "mystery": false
             },
             {
-                "name": "A melyseg kiralynoje",
+                "name": "A mélység királynője",
                 "kind": "nagy",
                 "simple_card_names": [
                     "Liora",

@@ -160,7 +160,6 @@ class DungeonListItem(QFrame):
             battle = ClickableImageButton(
                 "Assets/Images/Buttons/BattleNormal.png",
                 "Assets/Images/Buttons/BattleHover.png",
-                scale_factor=0.45,
             )
             battle.set_on_click(
                 lambda: self.game.start_battle_by_name(self.dungeon.name)
@@ -182,7 +181,7 @@ class MapPage(BackgroundWidget):
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(30, 20, 30, 20)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
         self.title_label = QLabel()
@@ -222,7 +221,6 @@ class MapPage(BackgroundWidget):
         self.to_deck_btn = ClickableImageButton(
             "Assets/Images/Buttons/DeckNormal.png",
             "Assets/Images/Buttons/DeckHover.png",
-            scale_factor=0.4,
         )
         self.to_deck_btn.set_on_click(self.game.show_deck_page)
         btn_row.addWidget(self.to_deck_btn)
@@ -230,7 +228,6 @@ class MapPage(BackgroundWidget):
         self.save_btn = ClickableImageButton(
             "Assets/Images/Buttons/SaveNormal.png",
             "Assets/Images/Buttons/SaveHover.png",
-            scale_factor=0.4,
         )
         self.save_btn.set_on_click(self.game.save_game_dialog)
         btn_row.addWidget(self.save_btn)
@@ -238,7 +235,6 @@ class MapPage(BackgroundWidget):
         self.auto_btn = ClickableImageButton(
             "Assets/Images/Buttons/AutoNormal.png",
             "Assets/Images/Buttons/AutoHover.png",
-            scale_factor=0.4,
         )
         self.auto_btn.set_on_click(self.generate_auto_dungeon)
         btn_row.addWidget(self.auto_btn)
@@ -248,7 +244,6 @@ class MapPage(BackgroundWidget):
         self.back_menu_btn = ClickableImageButton(
             "Assets/Images/Buttons/BackNormal.png",
             "Assets/Images/Buttons/BackHover.png",
-            scale_factor=0.4,
         )
         self.back_menu_btn.set_on_click(self.game.show_library_page)
         btn_row.addWidget(self.back_menu_btn)
@@ -281,7 +276,7 @@ class MapPage(BackgroundWidget):
 
         can_big = can_start_big_dungeon(world, state.player)
         if not can_big:
-            extra = "Jelenleg NEM indíthatsz nagy kazamatát – már minden sima kártyád megvan."
+            extra = "Jelenleg NEM indíthatsz nagy kazamatát - már minden sima kártyád megvan."
         else:
             extra = ""
         self.info_label.setText(extra)

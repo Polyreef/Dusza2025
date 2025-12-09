@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QFont, QFontDatabase, QPixmap
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QScrollArea, QVBoxLayout, QWidget
 
 from game.helpers import show_info
@@ -16,14 +16,14 @@ class DeckBuilderPage(BackgroundWidget):
 
     def _build_ui(self):
         layout = self.get_container()
-        layout.setContentsMargins(30, 20, 30, 20)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
         title_label = QLabel()
         title_pix = QPixmap("Assets/Images/Scrolls/AssembleDeck.png")
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
-                420, Qt.TransformationMode.SmoothTransformation
+                300, Qt.TransformationMode.SmoothTransformation
             )
         title_label.setPixmap(title_pix)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -41,7 +41,7 @@ class DeckBuilderPage(BackgroundWidget):
         left_title_pix = QPixmap("Assets/Images/Scrolls/Cards.png")
         if not left_title_pix.isNull():
             left_title_pix = left_title_pix.scaledToWidth(
-                350, Qt.TransformationMode.SmoothTransformation
+                200, Qt.TransformationMode.SmoothTransformation
             )
         left_title.setPixmap(left_title_pix)
         left_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -50,7 +50,7 @@ class DeckBuilderPage(BackgroundWidget):
         self.collection_area = QScrollArea()
         self.collection_area.setWidgetResizable(True)
         self.collection_area.setStyleSheet(
-            "QScrollArea {{ background: transparent; border: none; }}"
+            "QScrollArea { background: transparent; border: none; }"
         )
         self.collection_area.viewport().setStyleSheet("background: transparent;")
         self.collection_container = QWidget()
@@ -71,7 +71,7 @@ class DeckBuilderPage(BackgroundWidget):
         right_title_pix = QPixmap("Assets/Images/Scrolls/Deck.png")
         if not right_title_pix.isNull():
             right_title_pix = right_title_pix.scaledToWidth(
-                350, Qt.TransformationMode.SmoothTransformation
+                200, Qt.TransformationMode.SmoothTransformation
             )
         right_title.setPixmap(right_title_pix)
         right_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -80,7 +80,7 @@ class DeckBuilderPage(BackgroundWidget):
         self.deck_area = QScrollArea()
         self.deck_area.setWidgetResizable(True)
         self.deck_area.setStyleSheet(
-            "QScrollArea {{ background: transparent; border: none; }}"
+            "QScrollArea { background: transparent; border: none; }"
         )
         self.deck_area.viewport().setStyleSheet("background: transparent;")
         self.deck_container = QWidget()
@@ -93,15 +93,25 @@ class DeckBuilderPage(BackgroundWidget):
         self.deck_area.setMinimumHeight(260)
         right_box.addWidget(self.deck_area)
 
+        font_id = QFontDatabase.addApplicationFont("Assets/Font/AlmendraSC-Regular.ttf")
+        if font_id != -1:
+            family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        else:
+            family = "Times New Roman"
+        
+        font = QFont(family, 20)
+
         self.deck_info_label = QLabel("")
-        self.deck_info_label.setStyleSheet("font-size: 11px; color: white;")
         self.deck_info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.deck_info_label.setFont(font)
+        self.deck_info_label.setStyleSheet(
+            "color: white"
+        )
         layout.addWidget(self.deck_info_label)
 
         back_btn = ClickableImageButton(
             "Assets/Images/Buttons/QuitNormal.png",
             "Assets/Images/Buttons/QuitHover.png",
-            scale_factor=0.25,
         )
         back_btn.set_on_click(self.game.show_library_page)
         layout.addWidget(back_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -138,6 +148,15 @@ class DeckBuilderPage(BackgroundWidget):
 
         self.deck_info_label.setText(
             f"Gyűjtemény: {len(player.collection)} kártya • Pakli: {len(player.deck)}/{max_size}"
+        )
+
+        if len(player.deck) == max_size:
+            self.deck_info_label.setStyleSheet(
+            "color: #adff2f"
+        )
+        else:
+            self.deck_info_label.setStyleSheet(
+            "color: white"
         )
 
     def _create_collection_row(self, card, deck_full: bool):

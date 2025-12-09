@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt
 
 
 class ClickableImageButton(QLabel):
-    def __init__(self, normal_path, hover_path, parent=None, scale_factor: float = 1.0):
+    def __init__(self, normal_path, hover_path, parent=None, scale_factor: float = 0.60):
         super().__init__(parent)
         self.normal_pix_original = QPixmap(normal_path)
         self.hover_pix_original = QPixmap(hover_path)

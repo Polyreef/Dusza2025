@@ -180,6 +180,9 @@ def load_environment_from_file(filepath: str) -> Environment:
 
 # State mentése / betöltése
 
+# Nem használjuk, de sztem senkinek
+# sem árt, ha benne marad a kódban.
+
 
 def state_to_dict(state: State) -> dict:
     return {
