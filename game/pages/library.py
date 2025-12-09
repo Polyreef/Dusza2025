@@ -16,7 +16,9 @@ from game.widgets.cards import CardWidget
 
 class WorldLibraryPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(
+            game.working_dir + "Assets/Images/Backgrounds/Library.png", game
+        )
         self.game = game
         self._build_ui()
 
@@ -59,15 +61,6 @@ class WorldLibraryPage(BackgroundWidget):
         bottom_row.setSpacing(20)
         layout.addLayout(bottom_row)
 
-        deck_btn = ClickableImageButton(
-            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
-            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
-        )
-        deck_btn.set_on_click(self.game.show_deck_page)
-        bottom_row.addWidget(deck_btn)
-
-        bottom_row.addStretch(1)
-
         quit_btn = ClickableImageButton(
             self.game.working_dir + "Assets/Images/Buttons/QuitNormal.png",
             self.game.working_dir + "Assets/Images/Buttons/QuitHover.png",
@@ -75,10 +68,21 @@ class WorldLibraryPage(BackgroundWidget):
         quit_btn.set_on_click(self.game.show_main_menu)
         bottom_row.addWidget(quit_btn)
 
+        bottom_row.addStretch(1)
+
+        deck_btn = ClickableImageButton(
+            self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
+        )
+        deck_btn.set_on_click(self.game.show_deck_page)
+        bottom_row.addWidget(deck_btn)
+
 
 class WorldCardsPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(
+            game.working_dir + "Assets/Images/Backgrounds/Library.png", game
+        )
         self.game = game
         self._build_ui()
 
@@ -88,7 +92,9 @@ class WorldCardsPage(BackgroundWidget):
         layout.setSpacing(10)
 
         title_label = QLabel()
-        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/WorldCards.png")
+        title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/WorldCards.png"
+        )
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
                 320, Qt.TransformationMode.SmoothTransformation
@@ -183,7 +189,9 @@ class WorldCardsPage(BackgroundWidget):
 
 class CollectionPage(BackgroundWidget):
     def __init__(self, game: "DamareenGameWindow"):
-        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Library.png", game)
+        super().__init__(
+            game.working_dir + "Assets/Images/Backgrounds/Library.png", game
+        )
         self.game = game
         self._build_ui()
 

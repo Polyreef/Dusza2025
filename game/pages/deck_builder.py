@@ -20,7 +20,9 @@ class DeckBuilderPage(BackgroundWidget):
         layout.setSpacing(10)
 
         title_label = QLabel()
-        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/AssembleDeck.png")
+        title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/AssembleDeck.png"
+        )
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
                 300, Qt.TransformationMode.SmoothTransformation
@@ -38,7 +40,9 @@ class DeckBuilderPage(BackgroundWidget):
         middle.addLayout(left_box, stretch=1)
 
         left_title = QLabel()
-        left_title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/Cards.png")
+        left_title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/Cards.png"
+        )
         if not left_title_pix.isNull():
             left_title_pix = left_title_pix.scaledToWidth(
                 200, Qt.TransformationMode.SmoothTransformation
@@ -68,7 +72,9 @@ class DeckBuilderPage(BackgroundWidget):
         middle.addLayout(right_box, stretch=1)
 
         right_title = QLabel()
-        right_title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/Deck.png")
+        right_title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/Deck.png"
+        )
         if not right_title_pix.isNull():
             right_title_pix = right_title_pix.scaledToWidth(
                 200, Qt.TransformationMode.SmoothTransformation
@@ -93,20 +99,20 @@ class DeckBuilderPage(BackgroundWidget):
         self.deck_area.setMinimumHeight(260)
         right_box.addWidget(self.deck_area)
 
-        font_id = QFontDatabase.addApplicationFont(self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf")
+        font_id = QFontDatabase.addApplicationFont(
+            self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf"
+        )
         if font_id != -1:
             family = QFontDatabase.applicationFontFamilies(font_id)[0]
         else:
             family = "Times New Roman"
-        
-        font = QFont(family, 20)
+
+        font = QFont(family, 26)
 
         self.deck_info_label = QLabel("")
         self.deck_info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.deck_info_label.setFont(font)
-        self.deck_info_label.setStyleSheet(
-            "color: white"
-        )
+        self.deck_info_label.setStyleSheet("color: white")
         layout.addWidget(self.deck_info_label)
 
         back_btn = ClickableImageButton(
@@ -137,8 +143,9 @@ class DeckBuilderPage(BackgroundWidget):
         deck_full = len(player.deck) >= max_size
 
         for card in player.collection.values():
-            row = self._create_collection_row(card, deck_full)
-            self.collection_layout.addWidget(row)
+            if card.name not in player.deck:
+                row = self._create_collection_row(card, deck_full)
+                self.collection_layout.addWidget(row)
 
         for name in player.deck:
             card = player.collection.get(name)
@@ -146,18 +153,12 @@ class DeckBuilderPage(BackgroundWidget):
                 row = self._create_deck_row(card)
                 self.deck_layout.addWidget(row)
 
-        self.deck_info_label.setText(
-            f"Gyűjtemény: {len(player.collection)} kártya • Pakli: {len(player.deck)}/{max_size}"
-        )
+        self.deck_info_label.setText(f"{len(player.deck)}/{max_size}")
 
         if len(player.deck) == max_size:
-            self.deck_info_label.setStyleSheet(
-            "color: #adff2f"
-        )
+            self.deck_info_label.setStyleSheet("color: #adff2f")
         else:
-            self.deck_info_label.setStyleSheet(
-            "color: white"
-        )
+            self.deck_info_label.setStyleSheet("color: white")
 
     def _create_collection_row(self, card, deck_full: bool):
         row = QWidget()
@@ -166,7 +167,9 @@ class DeckBuilderPage(BackgroundWidget):
         h.setContentsMargins(0, 0, 0, 0)
         h.setSpacing(8)
 
-        card_widget = CardWidget(card, self.game.environment.world, self.game.working_dir)
+        card_widget = CardWidget(
+            card, self.game.environment.world, self.game.working_dir
+        )
         h.addWidget(card_widget)
 
         btn = ClickableArrowButton(
@@ -205,7 +208,9 @@ class DeckBuilderPage(BackgroundWidget):
         arrow_col.addStretch(1)
         h.addLayout(arrow_col)
 
-        card_widget = CardWidget(card, self.game.environment.world, self.game.working_dir)
+        card_widget = CardWidget(
+            card, self.game.environment.world, self.game.working_dir
+        )
         h.addWidget(card_widget)
 
         return row

@@ -1,6 +1,6 @@
 import random
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QFont, QFontDatabase, QPixmap
 from PySide6.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -42,6 +42,16 @@ class DungeonListItem(QFrame):
         self.world = world
         self.game = game
 
+        font_id = QFontDatabase.addApplicationFont(
+            self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf"
+        )
+        if font_id != -1:
+            family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        else:
+            family = "Times New Roman"
+
+        self.font_family = QFont(family, 20)
+
         border = self.BORDER_COLORS.get(dungeon.kind, "#ffffff")
 
         self.setObjectName("DungeonListItem")
@@ -64,7 +74,8 @@ class DungeonListItem(QFrame):
         main.addLayout(top)
 
         kind_to_bg = {
-            "egyszeru": self.game.working_dir + "Assets/Images/Backgrounds/egyszeru.png",
+            "egyszeru": self.game.working_dir
+            + "Assets/Images/Backgrounds/egyszeru.png",
             "kis": self.game.working_dir + "Assets/Images/Backgrounds/kis.png",
             "nagy": self.game.working_dir + "Assets/Images/Backgrounds/nagy.png",
         }
@@ -87,6 +98,7 @@ class DungeonListItem(QFrame):
         top.addLayout(right, stretch=1)
 
         title = QLabel(dungeon.name)
+        title.setFont(self.font_family)
         title.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
         right.addWidget(title)
 
@@ -108,6 +120,7 @@ class DungeonListItem(QFrame):
 
         info = QLabel(f"{kind_hu}\n{reward}")
         info.setWordWrap(True)
+        info.setFont(self.font_family)
         info.setStyleSheet("color: white;")
         right.addWidget(info)
 
@@ -129,7 +142,9 @@ class DungeonListItem(QFrame):
             cols = 2
 
             if is_mystery:
-                mystery_pix = QPixmap(self.game.working_dir + "Assets/Images/Misc/Mystery.png")
+                mystery_pix = QPixmap(
+                    self.game.working_dir + "Assets/Images/Misc/Mystery.png"
+                )
                 for i, _card_def in enumerate(seq):
                     lbl = QLabel()
                     if not mystery_pix.isNull():
@@ -185,16 +200,19 @@ class MapPage(BackgroundWidget):
         layout.setSpacing(10)
 
         self.title_label = QLabel()
-        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/Dungeons.png")
+        title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/Dungeons.png"
+        )
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
-                420, Qt.TransformationMode.SmoothTransformation
+                300, Qt.TransformationMode.SmoothTransformation
             )
         self.title_label.setPixmap(title_pix)
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.title_label)
 
         self.info_label = QLabel("")
+
         self.info_label.setStyleSheet("color: white; font-size: 14px;")
         self.info_label.setWordWrap(True)
         layout.addWidget(self.info_label)
@@ -218,6 +236,15 @@ class MapPage(BackgroundWidget):
         btn_row.setSpacing(20)
         layout.addLayout(btn_row)
 
+        self.back_menu_btn = ClickableImageButton(
+            self.game.working_dir + "Assets/Images/Buttons/BackNormal.png",
+            self.game.working_dir + "Assets/Images/Buttons/BackHover.png",
+        )
+        self.back_menu_btn.set_on_click(self.game.show_library_page)
+        btn_row.addWidget(self.back_menu_btn)
+
+        btn_row.addStretch(1)
+
         self.to_deck_btn = ClickableImageButton(
             self.game.working_dir + "Assets/Images/Buttons/DeckNormal.png",
             self.game.working_dir + "Assets/Images/Buttons/DeckHover.png",
@@ -238,15 +265,6 @@ class MapPage(BackgroundWidget):
         )
         self.auto_btn.set_on_click(self.generate_auto_dungeon)
         btn_row.addWidget(self.auto_btn)
-
-        btn_row.addStretch(1)
-
-        self.back_menu_btn = ClickableImageButton(
-            self.game.working_dir + "Assets/Images/Buttons/BackNormal.png",
-            self.game.working_dir + "Assets/Images/Buttons/BackHover.png",
-        )
-        self.back_menu_btn.set_on_click(self.game.show_library_page)
-        btn_row.addWidget(self.back_menu_btn)
 
     def _clear_list(self):
         while self.list_layout.count():
