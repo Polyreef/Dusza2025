@@ -210,6 +210,18 @@ class CollectionPage(BackgroundWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
 
+        title_label = QLabel()
+        title_pix = QPixmap(
+            self.game.working_dir + "Assets/Images/Scrolls/Collection.png"
+        )
+        if not title_pix.isNull():
+            title_pix = title_pix.scaledToWidth(
+                300, Qt.TransformationMode.SmoothTransformation
+            )
+        title_label.setPixmap(title_pix)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title_label)
+
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
