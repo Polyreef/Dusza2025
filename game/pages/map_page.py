@@ -49,8 +49,7 @@ class DungeonListItem(QFrame):
             family = QFontDatabase.applicationFontFamilies(font_id)[0]
         else:
             family = "Times New Roman"
-
-        self.font_family = QFont(family, 20)
+        self.font_family = QFont(family, 18)
 
         border = self.BORDER_COLORS.get(dungeon.kind, "#ffffff")
 
@@ -58,9 +57,30 @@ class DungeonListItem(QFrame):
         self.setStyleSheet(
             f"""
             QFrame#DungeonListItem {{
-                background-color: rgba(0, 0, 0, 140);
-                border-radius: 12px;
+                background: qlineargradient(
+                    x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(50,50,50,230),
+                    stop:1 rgba(30,30,30,200)
+                );
+                border-radius: 16px;
                 border: 3px solid {border};
+                padding: 12px;
+            }}
+            QFrame#DungeonListItem:hover {{
+                background: qlineargradient(
+                    x1:0, y1:0, x2:0, y2:1,
+                    stop:0 rgba(70,70,70,250),
+                    stop:1 rgba(45,45,45,230)
+                );
+                border: 3px solid {border};
+            }}
+            QLabel {{
+                color: white;
+                font-weight: bold;
+            }}
+            QLabel#info_label {{
+                color: #e0e0e0;
+                font-size: 18px;
             }}
         """
         )
@@ -69,109 +89,15 @@ class DungeonListItem(QFrame):
         main.setContentsMargins(20, 20, 20, 20)
         main.setSpacing(10)
 
-        top = QHBoxLayout()
-        top.setSpacing(12)
-        main.addLayout(top)
+        top_row = QHBoxLayout()
+        top_row.setSpacing(20)
+        main.addLayout(top_row)
 
-        kind_to_bg = {
-            "egyszeru": self.game.working_dir
-            + "Assets/Images/Backgrounds/egyszeru.png",
-            "kis": self.game.working_dir + "Assets/Images/Backgrounds/kis.png",
-            "nagy": self.game.working_dir + "Assets/Images/Backgrounds/nagy.png",
-        }
-
-        img = QLabel()
-        pix = QPixmap(kind_to_bg.get(dungeon.kind, ""))
-        if not pix.isNull():
-            pix = pix.scaled(
-                150,
-                90,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-            img.setPixmap(pix)
-        img.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        top.addWidget(img)
-
-        right = QVBoxLayout()
-        right.setSpacing(6)
-        top.addLayout(right, stretch=1)
-
-        title = QLabel(dungeon.name)
-        title.setFont(self.font_family)
-        title.setStyleSheet("color: white; font-size: 18px; font-weight: bold;")
-        right.addWidget(title)
-
-        kind_hu = {
-            "egyszeru": "Egyszerű találkozás",
-            "kis": "Kis kazamata",
-            "nagy": "Nagy kazamata",
-        }.get(dungeon.kind, "Ismeretlen")
-
-        reward = (
-            "Jutalom: új sima világkártya"
-            if dungeon.kind == "nagy"
-            else (
-                "Jutalom: +1 sebzés"
-                if dungeon.reward_type == "sebzes"
-                else "Jutalom: +2 életerő"
-            )
-        )
-
-        info = QLabel(f"{kind_hu}\n{reward}")
-        info.setWordWrap(True)
-        info.setFont(self.font_family)
-        info.setStyleSheet("color: white;")
-        right.addWidget(info)
-
-        cards_container = QWidget()
-        cards_container.setStyleSheet("background: transparent;")
-
-        grid = QGridLayout(cards_container)
-        grid.setContentsMargins(0, 0, 0, 0)
-        grid.setHorizontalSpacing(8)
-        grid.setVerticalSpacing(8)
-
-        is_mystery = False
-        mystery_map = getattr(world, "mystery_dungeons", {})
-        if isinstance(mystery_map, dict):
-            is_mystery = mystery_map.get(dungeon.name, False)
-
-        seq = dungeon.card_sequence(world)
-        if seq:
-            cols = 2
-
-            if is_mystery:
-                mystery_pix = QPixmap(
-                    self.game.working_dir + "Assets/Images/Misc/Mystery.png"
-                )
-                for i, _card_def in enumerate(seq):
-                    lbl = QLabel()
-                    if not mystery_pix.isNull():
-                        scaled = mystery_pix.scaled(
-                            120,
-                            160,
-                            Qt.AspectRatioMode.KeepAspectRatio,
-                            Qt.TransformationMode.SmoothTransformation,
-                        )
-                        lbl.setPixmap(scaled)
-                    lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    row = i // cols
-                    col = i % cols
-                    grid.addWidget(lbl, row, col)
-            else:
-                for i, card_def in enumerate(seq):
-                    cw = CardWidget(card_def, world, self.game.working_dir)
-                    row = i // cols
-                    col = i % cols
-                    grid.addWidget(cw, row, col)
-
-        right.addWidget(cards_container)
+        left = QVBoxLayout()
+        left.setAlignment(Qt.AlignmentFlag.AlignTop)
+        top_row.addLayout(left)
 
         if show_battle:
-            btn_layout = QHBoxLayout()
-            btn_layout.addStretch(1)
-
             battle = ClickableImageButton(
                 self.game.working_dir + "Assets/Images/Buttons/BattleNormal.png",
                 self.game.working_dir + "Assets/Images/Buttons/BattleHover.png",
@@ -183,9 +109,87 @@ class DungeonListItem(QFrame):
             if dungeon.kind == "nagy" and not can_start_big:
                 battle.setEnabled(False)
 
-            btn_layout.addWidget(battle)
-            btn_layout.addStretch(1)
-            main.addLayout(btn_layout)
+            left.addWidget(battle)
+
+        right = QHBoxLayout()
+        right.setSpacing(20)
+        right.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        top_row.addLayout(right, stretch=1)
+
+        title = QLabel(dungeon.name)
+        title.setFont(QFont(family, 26))
+        title.setStyleSheet("color: white; font-size: 26px; font-weight: bold;")
+        title.setWordWrap(True)
+        right.addWidget(title, stretch=0, alignment=Qt.AlignmentFlag.AlignLeft)
+
+        kind_hu = {
+            "egyszeru": "Egyszerű találkozás",
+            "kis": "Kis kazamata",
+            "nagy": "Nagy kazamata",
+        }.get(dungeon.kind, "Ismeretlen")
+
+        reward_text = (
+            "Jutalom: új sima világkártya"
+            if dungeon.kind == "nagy"
+            else (
+                "Jutalom: +1 sebzés"
+                if dungeon.reward_type == "sebzes"
+                else "Jutalom: +2 életerő"
+            )
+        )
+
+        info_box = QVBoxLayout()
+        info_box.setSpacing(2)
+        info_box.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+
+        info = QLabel(f"{kind_hu}\n{reward_text}")
+        info.setFont(QFont(family, 18))
+        info.setStyleSheet("color: #e0e0e0; font-size: 18px;")
+        info.setWordWrap(True)
+        info_box.addWidget(info)
+
+        right.addLayout(info_box, stretch=1)
+
+        cards_container = QWidget()
+        grid = QGridLayout(cards_container)
+        grid.setContentsMargins(0, 10, 0, 0)
+        grid.setHorizontalSpacing(12)
+        grid.setVerticalSpacing(12)
+
+        seq = dungeon.card_sequence(world)
+        is_mystery = getattr(world, "mystery_dungeons", {}).get(dungeon.name, False)
+
+        if seq:
+            cols = 3
+            for i, card_def in enumerate(seq):
+                cw = CardWidget(card_def, world, self.game.working_dir)
+
+                if is_mystery:
+                    cw.name_label.setText("???")
+                    cw.hp_label.setText("❤️ ???")
+                    cw.dmg_label.setText("⚔️ ???")
+
+                    cw.border_color = "#8B4513"
+                    cw.border_hover = "#A0522D"
+
+                    mystery_pix = QPixmap(
+                        self.game.working_dir + "Assets/Images/Misc/Mystery.png"
+                    )
+                    if not mystery_pix.isNull():
+                        cw.pixmap = mystery_pix
+                        scaled = cw.pixmap.scaled(
+                            cw.IMAGE_WIDTH,
+                            160,
+                            Qt.AspectRatioMode.KeepAspectRatio,
+                            Qt.TransformationMode.SmoothTransformation,
+                        )
+                        cw.image_label.setPixmap(scaled)
+
+                    cw._apply_style(False)
+
+                grid.addWidget(cw, i // cols, i % cols)
+
+        main.addWidget(cards_container)
 
 
 class MapPage(BackgroundWidget):
@@ -366,7 +370,9 @@ class MapPage(BackgroundWidget):
             reward_type=reward,
         )
 
-        ok = world.add_dungeon(dungeon, mystery=False)
+        mystery = random.randint(0, 1)
+
+        ok = world.add_dungeon(dungeon, mystery)
         if not ok:
             show_error(self, "Hiba", "A kazamata hozzáadása sikertelen.")
             return
@@ -376,7 +382,10 @@ class MapPage(BackgroundWidget):
         show_info(
             self,
             "Új automata kazamata",
-            f"Név: {name}\n" f"Típus: {kind}\n" f"Lapok száma: {total}",
+            f"Név: {name}\n"
+            f"Típus: {kind}\n"
+            f"Lapok száma: {total}\n"
+            f"Titokzatos: {"Igen" if mystery else "Nem"}",
         )
 
         self.refresh_from_environment()

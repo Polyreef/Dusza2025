@@ -4,7 +4,6 @@ from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -13,7 +12,7 @@ from PySide6.QtWidgets import (
 class CardWidget(QFrame):
     CARD_WIDTH = 180
     IMAGE_WIDTH = 140
-    MIN_HEIGHT = 190
+    MIN_HEIGHT = 200
 
     BORDER_COLORS = {
         "Levego": "#70c7ff",
@@ -23,10 +22,10 @@ class CardWidget(QFrame):
     }
 
     BORDER_COLORS_HOVER = {
-        "Levego": "#a2e0ff",
-        "Fold": "#a2c06b",
-        "Tuz": "#ff6a4a",
-        "Viz": "#7bd5f2",
+        "Levego": "#bde9ff",
+        "Fold": "#c4dfa0",
+        "Tuz": "#ff917c",
+        "Viz": "#9ee6ff",
     }
 
     def __init__(self, card, world, working_dir, parent=None):
@@ -45,28 +44,36 @@ class CardWidget(QFrame):
         img_path = working_dir + f"Assets/Images/Cards/{element}{style_id}.png"
         self.pixmap = QPixmap(img_path)
 
-        self.border_color = self.BORDER_COLORS.get(element, "#888888")
-        self.border_hover = self.BORDER_COLORS_HOVER.get(element, "#bbbbbb")
+        self.border_color = self.BORDER_COLORS.get(element, "#888")
+        self.border_hover = self.BORDER_COLORS_HOVER.get(element, "#bbb")
 
-        self.setFrameStyle(QFrame.Shape.StyledPanel)
         self.setObjectName("CardWidgetFrame")
         self._apply_style(hover=False)
 
-        font_id = QFontDatabase.addApplicationFont(working_dir + "Assets/Font/AlmendraSC-Regular.ttf")
-        if font_id != -1:
-            family = QFontDatabase.applicationFontFamilies(font_id)[0]
-        else:
-            family = "Times New Roman"
+        font_id = QFontDatabase.addApplicationFont(
+            working_dir + "Assets/Font/AlmendraSC-Regular.ttf"
+        )
+        family = (
+            QFontDatabase.applicationFontFamilies(font_id)[0]
+            if font_id != -1
+            else "Times New Roman"
+        )
 
-        name_font = QFont(family, 14)
+        name_font = QFont(family, 16)
         stat_font = QFont(family, 11)
 
         self.name_label = QLabel(card.name)
         self.name_label.setFont(name_font)
         self.name_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.name_label.setStyleSheet(
-            "color: white; padding: 2px 6px; "
-            "background: rgba(0, 0, 0, 150); border-radius: 6px;"
+            """
+            color: white;
+            padding: 4px 8px;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,130);
+            border-radius: 10px;
+            font-weight: bold;
+        """
         )
 
         self.image_label = QLabel()
@@ -86,52 +93,117 @@ class CardWidget(QFrame):
         hp_label.setFont(stat_font)
         hp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         hp_label.setStyleSheet(
-            "color: #ffb3b3; background: rgba(0,0,0,160); padding: 2px 10px; "
-            "border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
+            """
+            color: #ffb3b3;
+            background: rgba(100,0,0,180);
+            padding: 5px 14px;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+            font-weight: bold;
+        """
         )
 
         dmg_label = QLabel(f"⚔️ {card.damage}")
         dmg_label.setFont(stat_font)
         dmg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dmg_label.setStyleSheet(
-            "color: #ffd0aa; background: rgba(0,0,0,160); padding: 2px 10px; "
-            "border-top-right-radius: 8px; border-bottom-right-radius: 8px;"
+            """
+            color: #ffe0c0;
+            background: rgba(120, 80, 20, 180);
+            padding: 5px 14px;
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            font-weight: bold;
+        """
         )
 
         stats_layout.addWidget(hp_label)
         stats_layout.addWidget(dmg_label)
 
+        self.hp_label = hp_label
+        self.dmg_label = dmg_label
+
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(6, 6, 6, 6)
-        main_layout.setSpacing(4)
+        main_layout.setContentsMargins(8, 8, 8, 8)
+        main_layout.setSpacing(6)
         main_layout.addWidget(self.name_label)
         main_layout.addWidget(self.image_label)
         main_layout.addWidget(stats_widget)
 
         self.setFixedWidth(self.CARD_WIDTH)
         self.setMinimumHeight(self.MIN_HEIGHT)
-        self.setMaximumHeight(self.MIN_HEIGHT + 10)
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
     def _apply_style(self, hover: bool):
         border = self.border_hover if hover else self.border_color
-        bg = "rgba(25,25,25,180)" if not hover else "rgba(40,40,40,210)"
+
+        bg_gradient = (
+            f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(50,50,50,230), stop:1 rgba(30,30,30,200))"
+            if not hover
+            else f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(70,70,70,250), stop:1 rgba(45,45,45,230))"
+        )
+
         self.setStyleSheet(
             f"""
             QFrame#CardWidgetFrame {{
                 border: 3px solid {border};
-                border-radius: 12px;
-                background-color: {bg};
+                border-radius: 14px;
+                background: {bg_gradient};
             }}
-            """
+
+            /* Name label */
+            QLabel {{
+                color: white;
+                font-weight: bold;
+                letter-spacing: 1px;
+                padding: 4px 8px;
+                background: rgba(0,0,0,150);
+                border-radius: 10px;
+            }}
+
+            /* Health label */
+            QLabel#hp_label {{
+                color: #ffb3b3;
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(100,0,0,180),
+                    stop:1 rgba(150,0,0,180)
+                );
+                padding: 5px 14px;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+                font-weight: bold;
+            }}
+
+            /* Damage label */
+            QLabel#dmg_label {{
+                color: #ffe0c0;
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:1,
+                    stop:0 rgba(120,80,20,180),
+                    stop:1 rgba(180,120,50,180)
+                );
+                padding: 5px 14px;
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                font-weight: bold;
+            }}
+        """
         )
 
     def enterEvent(self, event):
-        self._apply_style(hover=True)
+        self._apply_style(True)
         return super().enterEvent(event)
 
     def leaveEvent(self, event):
-        self._apply_style(hover=False)
+        self._apply_style(False)
         return super().leaveEvent(event)
 
     def resizeEvent(self, event):

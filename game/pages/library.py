@@ -27,6 +27,16 @@ class WorldLibraryPage(BackgroundWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
 
+        title_label = QLabel()
+        title_pix = QPixmap(self.game.working_dir + "Assets/Images/Scrolls/Library.png")
+        if not title_pix.isNull():
+            title_pix = title_pix.scaledToWidth(
+                300, Qt.TransformationMode.SmoothTransformation
+            )
+        title_label.setPixmap(title_pix)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title_label)
+
         layout.addStretch(1)
 
         center_layout = QVBoxLayout()
@@ -97,7 +107,7 @@ class WorldCardsPage(BackgroundWidget):
         )
         if not title_pix.isNull():
             title_pix = title_pix.scaledToWidth(
-                320, Qt.TransformationMode.SmoothTransformation
+                300, Qt.TransformationMode.SmoothTransformation
             )
         title_label.setPixmap(title_pix)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)

@@ -261,8 +261,10 @@ class DamareenGameWindow(QMainWindow):
         try:
             env_data = data["environment"]
             state_data = data["state"]
+
             env = environment_from_dict(env_data)
             state = state_from_dict(state_data)
+
         except Exception as e:
             show_error(self, "Hiba", f"A mentés formátuma hibás:\n{e}")
             return
@@ -271,7 +273,6 @@ class DamareenGameWindow(QMainWindow):
         self.state = state
 
         self.deck_page.refresh_from_state()
-
         self.show_library_page()
         show_info(self, "Betöltve", "A játékállapot sikeresen betöltve.")
 
@@ -291,17 +292,20 @@ class DamareenGameWindow(QMainWindow):
 
     def save_game_to_path(self, path: str):
         assert self.environment and self.state
+
         data = {
             "environment": environment_to_dict(self.environment),
             "state": state_to_dict(self.state),
         }
+
         try:
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
+
+            show_info(self, "Mentve", "A játékállapot sikeresen elmentve.")
+
         except Exception as e:
             show_error(self, "Hiba", f"A mentés írása nem sikerült:\n{e}")
-            return
-        show_info(self, "Mentve", "A játékállapot sikeresen elmentve.")
 
     def start_battle_by_name(self, dungeon_name: str):
         if not (self.environment and self.state):

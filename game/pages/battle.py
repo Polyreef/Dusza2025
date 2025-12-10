@@ -1,40 +1,49 @@
-from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QPixmap, QFont, QFontDatabase
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
+from PySide6.QtCore import QPropertyAnimation, QTimer, Qt
+from PySide6.QtGui import QFont, QFontDatabase
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from game.widgets.background import BackgroundWidget
+from game.widgets.cards import CardWidget
 
 
 class BattleAnimationPage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__(game.working_dir + "Assets/Images/Backgrounds/egyszeru.png", game)
+        super().__init__(
+            game.working_dir + "Assets/Images/Backgrounds/egyszeru.png", game
+        )
         self.game = game
 
         self.log = []
         self.index = 0
 
-        self.player_label = QLabel(self)
-        self.enemy_label = QLabel(self)
+        self.player_deck = []
+        self.enemy_deck = []
+        self.player_index = 0
+        self.enemy_index = 0
+
+        self.player_card_widget = None
+        self.enemy_card_widget = None
         self.player_hp_label = QLabel(self)
         self.enemy_hp_label = QLabel(self)
 
         self.player_current = None
         self.enemy_current = None
-
         self.player_hp = 0
         self.enemy_hp = 0
 
         self._current_attack_anim = None
 
-        font_id = QFontDatabase.addApplicationFont(self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf")
+        font_id = QFontDatabase.addApplicationFont(
+            self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf"
+        )
         if font_id != -1:
             family = QFontDatabase.applicationFontFamilies(font_id)[0]
         else:
             family = "Times New Roman"
-        
+
         self.status_font = QFont(family, 26)
 
-        self.status_label = QLabel("Felkészülni...")
+        self.status_label = QLabel("")
         self.status_label.setFont(self.status_font)
         self.status_label.setStyleSheet("color: white; font-weight: bold;")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -53,7 +62,6 @@ class BattleAnimationPage(BackgroundWidget):
     def _build_ui(self):
         layout = self.get_container()
         layout.setContentsMargins(20, 20, 20, 20)
-
         layout.addWidget(self.status_label)
 
         field = QWidget()
@@ -61,19 +69,16 @@ class BattleAnimationPage(BackgroundWidget):
         f.setContentsMargins(0, 40, 0, 40)
         f.setSpacing(80)
 
-        self.player_label.setScaledContents(True)
-        self.player_label.setFixedSize(260, 300)
-        f.addWidget(
-            self.player_label,
-            alignment=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom,
-        )
+        self.player_container = QWidget()
+        self.player_layout = QVBoxLayout(self.player_container)
+        self.player_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.enemy_label.setScaledContents(True)
-        self.enemy_label.setFixedSize(260, 300)
-        f.addWidget(
-            self.enemy_label,
-            alignment=Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom,
-        )
+        self.enemy_container = QWidget()
+        self.enemy_layout = QVBoxLayout(self.enemy_container)
+        self.enemy_layout.setContentsMargins(0, 0, 0, 0)
+
+        f.addWidget(self.player_container, alignment=Qt.AlignmentFlag.AlignLeft)
+        f.addWidget(self.enemy_container, alignment=Qt.AlignmentFlag.AlignRight)
 
         layout.addWidget(field)
 
@@ -86,6 +91,8 @@ class BattleAnimationPage(BackgroundWidget):
         layout.addLayout(hp)
 
     def start_battle(self, dungeon, result, reward_msg):
+        self.status_label.setText("Felkészülni...")
+
         window = self.window()
         if hasattr(window, "sound"):
             window.sound.play("door")
@@ -96,7 +103,8 @@ class BattleAnimationPage(BackgroundWidget):
         self.reward_msg = reward_msg
 
         bg = {
-            "egyszeru": self.game.working_dir + "Assets/Images/Backgrounds/egyszeru.png",
+            "egyszeru": self.game.working_dir
+            + "Assets/Images/Backgrounds/egyszeru.png",
             "kis": self.game.working_dir + "Assets/Images/Backgrounds/kis.png",
             "nagy": self.game.working_dir + "Assets/Images/Backgrounds/nagy.png",
         }.get(dungeon.kind, "Assets/Images/Backgrounds/egyszeru.png")
@@ -110,9 +118,9 @@ class BattleAnimationPage(BackgroundWidget):
         self._preprocess_initial_cards()
 
         if self.player_current:
-            self.load_character_sprite(self.player_label, self.player_current)
+            self.set_character_card("player", self.player_current)
         if self.enemy_current:
-            self.load_character_sprite(self.enemy_label, self.enemy_current)
+            self.set_character_card("enemy", self.enemy_current)
 
         self.update_hp_labels()
 
@@ -145,34 +153,33 @@ class BattleAnimationPage(BackgroundWidget):
             if self.player_current and self.enemy_current:
                 return
 
-    def load_character_sprite(self, label, card_name):
+    def set_character_card(self, side, card_name):
         world = self.game.environment.world
         card = self.get_any_card_from_world(world, card_name)
-
         if not card:
-            pix = QPixmap(self.game.working_dir + "Assets/Images/Characters/Fold1.png")
-        else:
-            elem = card.element.capitalize()
-            style = world.simple_styles.get(card.name) or world.leader_styles.get(
-                card.name, 1
-            )
-            path = self.game.working_dir + f"Assets/Images/Characters/{elem}{style}.png"
-            pix = QPixmap(path)
-            if pix.isNull():
-                pix = QPixmap(self.game.working_dir + "Assets/Images/Characters/Fold1.png")
+            return
 
-        label.setPixmap(
-            pix.scaled(
-                label.width(),
-                label.height(),
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        )
+        widget = CardWidget(card, world, self.game.working_dir)
+
+        if side == "player":
+            for i in reversed(range(self.player_layout.count())):
+                old_widget = self.player_layout.itemAt(i).widget()
+                if old_widget:
+                    old_widget.deleteLater()
+            self.player_layout.addWidget(widget)
+            self.player_card_widget = widget
+
+        else:
+            for i in reversed(range(self.enemy_layout.count())):
+                old_widget = self.enemy_layout.itemAt(i).widget()
+                if old_widget:
+                    old_widget.deleteLater()
+            self.enemy_layout.addWidget(widget)
+            self.enemy_card_widget = widget
 
     def update_hp_labels(self):
-        self.player_hp_label.setText(f"❤️ {self.player_hp}")
-        self.enemy_hp_label.setText(f"❤️ {self.enemy_hp}")
+        self.player_card_widget.hp_label.setText(f"❤️ {self.player_hp}")
+        self.enemy_card_widget.hp_label.setText(f"❤️ {self.enemy_hp}")
 
     def next_step(self):
         if self.index >= len(self.log):
@@ -216,11 +223,11 @@ class BattleAnimationPage(BackgroundWidget):
             if actor == "jatekos":
                 self.player_current = name
                 self.player_hp = hp
-                self.load_character_sprite(self.player_label, name)
+                self.set_character_card("player", self.player_current)
             else:
                 self.enemy_current = name
                 self.enemy_hp = hp
-                self.load_character_sprite(self.enemy_label, name)
+                self.set_character_card("enemy", self.enemy_current)
 
             self.update_hp_labels()
             QTimer.singleShot(400, self.next_step)
@@ -268,11 +275,11 @@ class BattleAnimationPage(BackgroundWidget):
                 self.game.sound.play(sound_name)
 
         if attacker == "player":
-            mover = self.player_label
-            target = self.enemy_label
+            mover = self.player_card_widget
+            target = self.enemy_card_widget
         else:
-            mover = self.enemy_label
-            target = self.player_label
+            mover = self.enemy_card_widget
+            target = self.player_card_widget
 
         start = mover.pos()
         hit = start + QPoint(200 if attacker == "player" else -200, -10)
@@ -313,22 +320,21 @@ class BattleAnimationPage(BackgroundWidget):
             self.enemy_hp -= dmg
             if self.enemy_hp <= 0:
                 self.enemy_hp = 0
-                self.kill_character(self.enemy_label)
+                self.kill_character(self.enemy_card_widget)
         else:
             self.player_hp -= dmg
             if self.player_hp <= 0:
                 self.player_hp = 0
-                self.kill_character(self.player_label)
+                self.kill_character(self.player_card_widget)
 
         self.update_hp_labels()
         QTimer.singleShot(600, self.next_step)
 
-    def kill_character(self, label):
-        from PySide6.QtCore import QPropertyAnimation
-
-        fade = QPropertyAnimation(label, b"windowOpacity", label)
+    def kill_character(self, widget):
+        fade = QPropertyAnimation(widget, b"windowOpacity", widget)
         fade.setDuration(600)
         fade.setEndValue(0)
+        fade.finished.connect(widget.deleteLater)
         fade.start()
 
     def finish_battle(self):

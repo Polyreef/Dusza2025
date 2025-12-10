@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt, Property, QPropertyAnimation
-from PySide6.QtGui import QColor, QPainter, QPixmap
+from PySide6.QtGui import QColor, QPainter, QPixmap, QFontDatabase, QFont
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from game.widgets.background import BackgroundWidget
@@ -30,8 +30,19 @@ class FadeOverlay(QWidget):
 
 class VictoryLosePage(BackgroundWidget):
     def __init__(self, game):
-        super().__init__(game.working_dir + "Assets/Images/Backgrounds/Victory.png", game)
+        super().__init__(
+            game.working_dir + "Assets/Images/Backgrounds/Victory.png", game
+        )
         self.game = game
+
+        font_id = QFontDatabase.addApplicationFont(
+            self.game.working_dir + "Assets/Font/AlmendraSC-Regular.ttf"
+        )
+        if font_id != -1:
+            family = QFontDatabase.applicationFontFamilies(font_id)[0]
+        else:
+            family = "Times New Roman"
+        self.font_family = QFont(family, 22, QFont.Weight.Bold)
 
         self.overlay = FadeOverlay(self)
         self.overlay.raise_()
@@ -52,15 +63,13 @@ class VictoryLosePage(BackgroundWidget):
 
         self.text_label = QLabel("")
         self.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.text_label.setStyleSheet(
-            "color: #2b1a08; font-size: 22px; font-weight: bold;"
-        )
+        self.text_label.setFont(self.font_family)
+        self.text_label.setStyleSheet("color: white;")
         self.vbox.addWidget(self.text_label)
 
         self.done_btn = ClickableImageButton(
             self.game.working_dir + "Assets/Images/Buttons/DoneNormal.png",
             self.game.working_dir + "Assets/Images/Buttons/DoneHover.png",
-            
         )
         self.done_btn.set_on_click(lambda: self.game.show_deck_page())
         self.vbox.addWidget(self.done_btn, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -73,14 +82,18 @@ class VictoryLosePage(BackgroundWidget):
         window = self.window()
 
         if outcome == "win":
-            self.set_background(self.game.working_dir + "Assets/Images/Backgrounds/Victory.png")
+            self.set_background(
+                self.game.working_dir + "Assets/Images/Backgrounds/Victory.png"
+            )
             scroll_path = self.game.working_dir + "Assets/Images/Scrolls/Victory.png"
-            main_text = "Győzelem!"
+            main_text = ""
 
             if hasattr(window, "sound"):
                 window.sound.play("trumpets")
         else:
-            self.set_background(self.game.working_dir + "Assets/Images/Backgrounds/Lose.png")
+            self.set_background(
+                self.game.working_dir + "Assets/Images/Backgrounds/Lose.png"
+            )
             scroll_path = self.game.working_dir + "Assets/Images/Scrolls/Lose.png"
             main_text = "Vereség…"
 
@@ -93,7 +106,7 @@ class VictoryLosePage(BackgroundWidget):
 
         full_text = main_text
         if reward_msg:
-            full_text += f"\n\n{reward_msg}"
+            full_text += f" {reward_msg}"
 
         self.text_label.setText(full_text)
 
