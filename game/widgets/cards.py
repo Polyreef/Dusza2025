@@ -89,13 +89,13 @@ class CardWidget(QFrame):
         stats_layout.setContentsMargins(0, 0, 0, 0)
         stats_layout.setSpacing(0)
 
-        hp_label = QLabel(f"❤️ {card.health}")
-        hp_label.setFont(stat_font)
-        hp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        hp_label.setStyleSheet(
+        dmg_label = QLabel(f"⚔️ {card.damage}")
+        dmg_label.setFont(stat_font)
+        dmg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        dmg_label.setStyleSheet(
             """
-            color: #ffb3b3;
-            background: rgba(100,0,0,180);
+            color: #ffe0c0;
+            background: rgba(120, 80, 20, 180);
             padding: 5px 14px;
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
@@ -105,13 +105,13 @@ class CardWidget(QFrame):
         """
         )
 
-        dmg_label = QLabel(f"⚔️ {card.damage}")
-        dmg_label.setFont(stat_font)
-        dmg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dmg_label.setStyleSheet(
+        hp_label = QLabel(f"❤️ {card.health}")
+        hp_label.setFont(stat_font)
+        hp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        hp_label.setStyleSheet(
             """
-            color: #ffe0c0;
-            background: rgba(120, 80, 20, 180);
+            color: #ffb3b3;
+            background: rgba(100,0,0,180);
             padding: 5px 14px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
@@ -121,11 +121,11 @@ class CardWidget(QFrame):
         """
         )
 
-        stats_layout.addWidget(hp_label)
         stats_layout.addWidget(dmg_label)
+        stats_layout.addWidget(hp_label)
 
-        self.hp_label = hp_label
         self.dmg_label = dmg_label
+        self.hp_label = hp_label
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(8, 8, 8, 8)
@@ -164,13 +164,13 @@ class CardWidget(QFrame):
                 border-radius: 10px;
             }}
 
-            /* Health label */
-            QLabel#hp_label {{
-                color: #ffb3b3;
+            /* Damage label */
+            QLabel#dmg_label {{
+                color: #ffe0c0;
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(100,0,0,180),
-                    stop:1 rgba(150,0,0,180)
+                    stop:0 rgba(120,80,20,180),
+                    stop:1 rgba(180,120,50,180)
                 );
                 padding: 5px 14px;
                 border-top-left-radius: 10px;
@@ -180,13 +180,13 @@ class CardWidget(QFrame):
                 font-weight: bold;
             }}
 
-            /* Damage label */
-            QLabel#dmg_label {{
-                color: #ffe0c0;
+            /* Health label */
+            QLabel#hp_label {{
+                color: #ffb3b3;
                 background: qlineargradient(
                     x1:0, y1:0, x2:1, y2:1,
-                    stop:0 rgba(120,80,20,180),
-                    stop:1 rgba(180,120,50,180)
+                    stop:0 rgba(100,0,0,180),
+                    stop:1 rgba(150,0,0,180)
                 );
                 padding: 5px 14px;
                 border-top-left-radius: 0px;

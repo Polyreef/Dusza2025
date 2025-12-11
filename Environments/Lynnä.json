@@ -1,0 +1,869 @@
+{
+    "name": "Lynnä világa",
+    "world": {
+        "simple_cards": [
+            {
+                "name": "Ädden",
+                "damage": 2,
+                "health": 4,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Alen",
+                "damage": 2,
+                "health": 3,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Alysä",
+                "damage": 3,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Ämeryä",
+                "damage": 3,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Ämmen",
+                "damage": 2,
+                "health": 3,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Ämyä",
+                "damage": 3,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Ängelyä",
+                "damage": 3,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Ännä",
+                "damage": 2,
+                "health": 3,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Anten",
+                "damage": 3,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Ärletä",
+                "damage": 2,
+                "health": 3,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Äsmyä",
+                "damage": 2,
+                "health": 4,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Äyden",
+                "damage": 3,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Benäen",
+                "damage": 3,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Däven",
+                "damage": 3,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Ätenä",
+                "damage": 2,
+                "health": 4,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "Äurä",
+                "damage": 2,
+                "health": 5,
+                "element": "levego",
+                "style": 2
+            },
+            {
+                "name": "Elgen",
+                "damage": 5,
+                "health": 2,
+                "element": "tuz",
+                "style": 2
+            },
+            {
+                "name": "Eomen",
+                "damage": 5,
+                "health": 2,
+                "element": "fold",
+                "style": 2
+            },
+            {
+                "name": "Ävä",
+                "damage": 3,
+                "health": 5,
+                "element": "viz",
+                "style": 3
+            },
+            {
+                "name": "Äytä",
+                "damage": 3,
+                "health": 6,
+                "element": "levego",
+                "style": 3
+            },
+            {
+                "name": "Esrämen",
+                "damage": 6,
+                "health": 2,
+                "element": "tuz",
+                "style": 3
+            },
+            {
+                "name": "Esten",
+                "damage": 6,
+                "health": 3,
+                "element": "fold",
+                "style": 3
+            },
+            {
+                "name": "Elenä",
+                "damage": 4,
+                "health": 6,
+                "element": "viz",
+                "style": 4
+            },
+            {
+                "name": "Enä",
+                "damage": 4,
+                "health": 7,
+                "element": "levego",
+                "style": 4
+            },
+            {
+                "name": "Eylen",
+                "damage": 7,
+                "health": 3,
+                "element": "tuz",
+                "style": 4
+            },
+            {
+                "name": "Gälen",
+                "damage": 7,
+                "health": 4,
+                "element": "fold",
+                "style": 4
+            },
+            {
+                "name": "Evä",
+                "damage": 4,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Evlynä",
+                "damage": 3,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Gennä",
+                "damage": 3,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Hänneä",
+                "damage": 2,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Hernä",
+                "damage": 2,
+                "health": 3,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Kämen",
+                "damage": 2,
+                "health": 3,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Kärlen",
+                "damage": 2,
+                "health": 3,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Kennen",
+                "damage": 2,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Keyä",
+                "damage": 2,
+                "health": 3,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Kryssen",
+                "damage": 3,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Kyllen",
+                "damage": 3,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Luken",
+                "damage": 3,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Leä",
+                "damage": 2,
+                "health": 4,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "Lourä",
+                "damage": 2,
+                "health": 4,
+                "element": "levego",
+                "style": 2
+            },
+            {
+                "name": "Lunä",
+                "damage": 3,
+                "health": 5,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "Lyen",
+                "damage": 4,
+                "health": 2,
+                "element": "tuz",
+                "style": 2
+            },
+            {
+                "name": "Massen",
+                "damage": 5,
+                "health": 2,
+                "element": "fold",
+                "style": 2
+            },
+            {
+                "name": "Matten",
+                "damage": 5,
+                "health": 2,
+                "element": "tuz",
+                "style": 2
+            },
+            {
+                "name": "Lydeä",
+                "damage": 3,
+                "health": 5,
+                "element": "levego",
+                "style": 3
+            },
+            {
+                "name": "Lyleä",
+                "damage": 4,
+                "health": 6,
+                "element": "viz",
+                "style": 3
+            },
+            {
+                "name": "Mäven",
+                "damage": 6,
+                "health": 3,
+                "element": "fold",
+                "style": 3
+            },
+            {
+                "name": "Myhelen",
+                "damage": 6,
+                "health": 3,
+                "element": "tuz",
+                "style": 3
+            },
+            {
+                "name": "Mevyä",
+                "damage": 4,
+                "health": 6,
+                "element": "levego",
+                "style": 4
+            },
+            {
+                "name": "Myä",
+                "damage": 4,
+                "health": 7,
+                "element": "viz",
+                "style": 4
+            },
+            {
+                "name": "Nëyten",
+                "damage": 7,
+                "health": 4,
+                "element": "fold",
+                "style": 4
+            },
+            {
+                "name": "Norren",
+                "damage": 7,
+                "health": 3,
+                "element": "tuz",
+                "style": 4
+            },
+            {
+                "name": "Myleyä",
+                "damage": 3,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Myllä",
+                "damage": 3,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Neyä",
+                "damage": 2,
+                "health": 2,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Nykken",
+                "damage": 2,
+                "health": 3,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Oleä",
+                "damage": 2,
+                "health": 2,
+                "element": "viz",
+                "style": 1
+            },
+            {
+                "name": "Onneä",
+                "damage": 2,
+                "health": 3,
+                "element": "levego",
+                "style": 1
+            },
+            {
+                "name": "Pallen",
+                "damage": 2,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Renden",
+                "damage": 2,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Rouden",
+                "damage": 3,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "Ryhen",
+                "damage": 3,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "Rëyä",
+                "damage": 2,
+                "health": 3,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "Seästen",
+                "damage": 4,
+                "health": 2,
+                "element": "tuz",
+                "style": 2
+            },
+            {
+                "name": "Skonnen",
+                "damage": 4,
+                "health": 2,
+                "element": "fold",
+                "style": 2
+            },
+            {
+                "name": "Sonä",
+                "damage": 2,
+                "health": 4,
+                "element": "levego",
+                "style": 2
+            },
+            {
+                "name": "Stellä",
+                "damage": 3,
+                "health": 4,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "Stennen",
+                "damage": 5,
+                "health": 2,
+                "element": "tuz",
+                "style": 2
+            },
+            {
+                "name": "Synteä",
+                "damage": 3,
+                "health": 5,
+                "element": "levego",
+                "style": 3
+            },
+            {
+                "name": "Tymen",
+                "damage": 5,
+                "health": 3,
+                "element": "fold",
+                "style": 3
+            },
+            {
+                "name": "Verlyä",
+                "damage": 4,
+                "health": 5,
+                "element": "viz",
+                "style": 3
+            },
+            {
+                "name": "Vyllen",
+                "damage": 6,
+                "health": 3,
+                "element": "tuz",
+                "style": 3
+            },
+            {
+                "name": "Vynä",
+                "damage": 4,
+                "health": 6,
+                "element": "levego",
+                "style": 3
+            },
+            {
+                "name": "Vynsen",
+                "damage": 6,
+                "health": 4,
+                "element": "fold",
+                "style": 3
+            },
+            {
+                "name": "Yessen",
+                "damage": 7,
+                "health": 3,
+                "element": "tuz",
+                "style": 4
+            },
+            {
+                "name": "Ymenä",
+                "damage": 4,
+                "health": 6,
+                "element": "viz",
+                "style": 4
+            },
+            {
+                "name": "Yonnen",
+                "damage": 7,
+                "health": 3,
+                "element": "fold",
+                "style": 4
+            },
+            {
+                "name": "Yseä",
+                "damage": 3,
+                "health": 7,
+                "element": "levego",
+                "style": 4
+            }
+        ],
+        "leader_cards": [
+            {
+                "name": "L. Anten",
+                "damage": 6,
+                "health": 2,
+                "element": "tuz",
+                "style": 1
+            },
+            {
+                "name": "L. Massen",
+                "damage": 10,
+                "health": 2,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "L. Tymen",
+                "damage": 10,
+                "health": 3,
+                "element": "fold",
+                "style": 1
+            },
+            {
+                "name": "P. Ängyleä",
+                "damage": 3,
+                "health": 4,
+                "element": "viz",
+                "style": 2
+            },
+            {
+                "name": "P. Lourä",
+                "damage": 2,
+                "health": 8,
+                "element": "levego",
+                "style": 2
+            },
+            {
+                "name": "P. Verlyä",
+                "damage": 4,
+                "health": 10,
+                "element": "viz",
+                "style": 2
+            }
+        ],
+        "dungeons": [
+            {
+                "name": "Dävenai találkozás",
+                "kind": "egyszeru",
+                "simple_card_names": [
+                    "Däven"
+                ],
+                "leader_name": null,
+                "reward_type": "sebzes",
+                "mystery": false
+            },
+            {
+                "name": "Äsmyänni találkozás",
+                "kind": "egyszeru",
+                "simple_card_names": [
+                    "Äsmyä"
+                ],
+                "leader_name": null,
+                "reward_type": "eletero",
+                "mystery": false
+            },
+            {
+                "name": "Titokzatos csata #1",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Esten",
+                    "Eylen",
+                    "Gälen"
+                ],
+                "leader_name": "L. Anten",
+                "reward_type": "sebzes",
+                "mystery": true
+            },
+            {
+                "name": "Titokzatos csata #2",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Äytä",
+                    "Elenä",
+                    "Enä"
+                ],
+                "leader_name": "P. Ängyleä",
+                "reward_type": "eletero",
+                "mystery": true
+            },
+            {
+                "name": "Antenai Barlang",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Ädden",
+                    "Alen",
+                    "Ämmen",
+                    "Äyden",
+                    "Benäen"
+                ],
+                "leader_name": "L. Anten",
+                "reward_type": null,
+                "mystery": false
+            },
+            {
+                "name": "Ängyleänni Barlang",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Alysä",
+                    "Ämeryä",
+                    "Ämyä",
+                    "Ännä",
+                    "Ärletä"
+                ],
+                "leader_name": "P. Ängyleä",
+                "reward_type": null,
+                "mystery": false
+            },
+            {
+                "name": "Lukenai találkozás",
+                "kind": "egyszeru",
+                "simple_card_names": [
+                    "Luken"
+                ],
+                "leader_name": null,
+                "reward_type": "sebzes",
+                "mystery": false
+            },
+            {
+                "name": "Keyänni találkozás",
+                "kind": "egyszeru",
+                "simple_card_names": [
+                    "Keyä"
+                ],
+                "leader_name": null,
+                "reward_type": "eletero",
+                "mystery": false
+            },
+            {
+                "name": "Titokzatos csata #3",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Myhelen",
+                    "Nëyten",
+                    "Norren"
+                ],
+                "leader_name": "L. Massen",
+                "reward_type": "sebzes",
+                "mystery": true
+            },
+            {
+                "name": "Titokzatos csata #4",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Lyleä",
+                    "Mevyä",
+                    "Myä"
+                ],
+                "leader_name": "P. Lourä",
+                "reward_type": "eletero",
+                "mystery": true
+            },
+            {
+                "name": "Massenai Templom",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Kämen",
+                    "Kärlen",
+                    "Kennen",
+                    "Kryssen",
+                    "Kyllen"
+                ],
+                "leader_name": "L. Massen",
+                "reward_type": null,
+                "mystery": false
+            },
+            {
+                "name": "Louränni Templom",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Evä",
+                    "Evlynä",
+                    "Gennä",
+                    "Hänneä",
+                    "Hernä"
+                ],
+                "leader_name": "P. Lourä",
+                "reward_type": null,
+                "mystery": false
+            },
+            {
+                "name": "Titokzatos csata #5",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Vyllen",
+                    "Vynsen",
+                    "Yessen"
+                ],
+                "leader_name": "L. Tymen",
+                "reward_type": "sebzes",
+                "mystery": true
+            },
+            {
+                "name": "Titokzatos csata #6",
+                "kind": "kis",
+                "simple_card_names": [
+                    "Vynä",
+                    "Ymenä",
+                    "Yseä"
+                ],
+                "leader_name": "P. Verlyä",
+                "reward_type": "eletero",
+                "mystery": true
+            },
+            {
+                "name": "Tymenai Szentély",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Nykken",
+                    "Pallen",
+                    "Renden",
+                    "Rouden",
+                    "Ryhen"
+                ],
+                "leader_name": "L. Tymen",
+                "reward_type": null,
+                "mystery": false
+            },
+            {
+                "name": "Verlyänni Szentély",
+                "kind": "nagy",
+                "simple_card_names": [
+                    "Myleyä",
+                    "Myllä",
+                    "Neyä",
+                    "Oleä",
+                    "Onneä"
+                ],
+                "leader_name": "P. Verlyä",
+                "reward_type": null,
+                "mystery": false
+            }
+        ]
+    },
+    "starting_collection": [
+        {
+            "name": "Ädden",
+            "damage": 2,
+            "health": 4,
+            "element": "fold"
+        },
+        {
+            "name": "Alysä",
+            "damage": 4,
+            "health": 2,
+            "element": "levego"
+        },
+        {
+            "name": "Äsmyä",
+            "damage": 2,
+            "health": 4,
+            "element": "levego"
+        },
+        {
+            "name": "Äyden",
+            "damage": 3,
+            "health": 2,
+            "element": "fold"
+        },
+        {
+            "name": "Evä",
+            "damage": 4,
+            "health": 2,
+            "element": "viz"
+        },
+        {
+            "name": "Kämen",
+            "damage": 2,
+            "health": 3,
+            "element": "tuz"
+        },
+        {
+            "name": "Kryssen",
+            "damage": 3,
+            "health": 2,
+            "element": "fold"
+        },
+        {
+            "name": "Kyllen",
+            "damage": 3,
+            "health": 2,
+            "element": "tuz"
+        },
+        {
+            "name": "Myleyä",
+            "damage": 3,
+            "health": 2,
+            "element": "levego"
+        },
+        {
+            "name": "Nykken",
+            "damage": 2,
+            "health": 3,
+            "element": "fold"
+        },
+        {
+            "name": "Renden",
+            "damage": 2,
+            "health": 2,
+            "element": "fold"
+        },
+        {
+            "name": "Rouden",
+            "damage": 3,
+            "health": 2,
+            "element": "tuz"
+        }
+    ]
+}

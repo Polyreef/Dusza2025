@@ -48,14 +48,30 @@ Profi módban futtatáshoz a programot a `--tool` paraméterrel indítjuk el.
 
 Példa parancs: `python main.py --tool`
 
+## Játékkörnyezetek
+
+A játékkörnyezetek alapértelmezett mappája az `Environments`. Alapból 2 környezetet találhatsz:
+
+- **Klasszikus**: A verseny I. fordulójában leírt környezet.
+    
+    - 11 sima kártya
+    - 2 vezérkártya
+    - 3 kazamata
+
+- **Lynnä**: Saját készítésű környezet, a még 2022-ben készült nyelvemből használ neveket.
+
+    - 78 sima kártya
+    - 6 vezérkártya
+    - 16 kazamata (6 titokzatos kazamata)
+
 ## Képernyőképek
 
 ![Menü](Screenshots/Screenshot1.png "Menü")
 ![Könyvtár](Screenshots/Screenshot2.png "Könyvtár")
 ![Világkártyák](Screenshots/Screenshot3.png "Világkártyák")
-![Kazamaták](Screenshots/Screenshot4.png "Kazamaták")
-![Gyűjteményed](Screenshots/Screenshot5.png "Gyűjteményed")
-![Pakli](Screenshots/Screenshot6.png "Pakli")
+![Gyűjteményed](Screenshots/Screenshot4.png "Gyűjteményed")
+![Pakli](Screenshots/Screenshot5.png "Pakli")
+![Kazamaták](Screenshots/Screenshot6.png "Kazamaták")
 ![Harc](Screenshots/Screenshot7.png "Harc")
 ![Profi mód - Játékos fül](Screenshots/Screenshot8.png "Profi mód - Játékos fül")
 ![Profi mód - Játékmester fül](Screenshots/Screenshot9.png "Profi mód - Játékmester fül")

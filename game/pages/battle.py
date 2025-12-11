@@ -154,26 +154,36 @@ class BattleAnimationPage(BackgroundWidget):
                 return
 
     def set_character_card(self, side, card_name):
-        world = self.game.environment.world
-        card = self.get_any_card_from_world(world, card_name)
-        if not card:
-            return
-
-        widget = CardWidget(card, world, self.game.working_dir)
-
         if side == "player":
+            card = self.game.state.player.collection.get(card_name)
+            if not card:
+                print(f"Ismeretlen játékos kártya: {card_name}")
+                return
+            world = self.game.environment.world  # szükséges a CardWidget-hez
+            widget = CardWidget(card, world, self.game.working_dir)
+
             for i in reversed(range(self.player_layout.count())):
                 old_widget = self.player_layout.itemAt(i).widget()
                 if old_widget:
                     old_widget.deleteLater()
+
             self.player_layout.addWidget(widget)
             self.player_card_widget = widget
 
         else:
+            world = self.game.environment.world
+            card = self.get_any_card_from_world(world, card_name)
+            if not card:
+                print(f"Ismeretlen ellenség kártya: {card_name}")
+                return
+
+            widget = CardWidget(card, world, self.game.working_dir)
+
             for i in reversed(range(self.enemy_layout.count())):
                 old_widget = self.enemy_layout.itemAt(i).widget()
                 if old_widget:
                     old_widget.deleteLater()
+
             self.enemy_layout.addWidget(widget)
             self.enemy_card_widget = widget
 
