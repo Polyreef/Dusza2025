@@ -40,8 +40,13 @@ class CardWidget(QFrame):
         else:
             style_id = 1
 
+        if card.name in world.leader_styles:
+            prefix = "V"
+        else:
+            prefix = ""
+
         element = card.element.capitalize()
-        img_path = working_dir + f"Assets/Images/Cards/{element}{style_id}.png"
+        img_path = working_dir + f"Assets/Images/Cards/{element}{prefix}{style_id}.png"
         self.pixmap = QPixmap(img_path)
 
         self.border_color = self.BORDER_COLORS.get(element, "#888")

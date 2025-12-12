@@ -159,7 +159,7 @@ class BattleAnimationPage(BackgroundWidget):
             if not card:
                 print(f"Ismeretlen játékos kártya: {card_name}")
                 return
-            world = self.game.environment.world  # szükséges a CardWidget-hez
+            world = self.game.environment.world
             widget = CardWidget(card, world, self.game.working_dir)
 
             for i in reversed(range(self.player_layout.count())):
